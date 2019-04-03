@@ -33,15 +33,15 @@ module.exports = function (io) {
         // });
 
       
-        socket.on('getActiveRows', async function (table,permission,column, callback) {
+        socket.on('getActiveRows', async function (table,action,column, callback) {
             let operator = await mysql.getOneRow('operator', {id: socket.decoded_token.id});
-            if (operator['operator_permission'].indexOf(permission) < 0) {
+            if (operator['operator_permission'].indexOf('can' + action + table) < 0) {
                 callback(410);
                 return;
             }
             try {
                 let result = await mysql.country.getActiveRows(table, column);
-                callback(200, result);
+                callback(200, result[0]);
             } catch (error) {
                 if(error.message !== undefined)
                     callback(666, error.message);
