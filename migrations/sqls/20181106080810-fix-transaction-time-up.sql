@@ -1,0 +1,1 @@
+ALTER TABLE rider_transaction CHANGE transction_time transaction_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP;
