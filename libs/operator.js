@@ -60,7 +60,7 @@ module.exports = function (io) {
             callback(cars[0]);
         });
 
-        socket.on('getRows', async function (table,permission ,filers, sort, from, pageSize, fullTextFields, fullTextValue, callback) {
+        socket.on('getRows', async function (table,action ,filers, sort, from, pageSize, fullTextFields, fullTextValue, callback) {
             if (fullTextValue === null && fullTextFields === null) {
                 callback(100);
                 return;
@@ -68,11 +68,13 @@ module.exports = function (io) {
             let operator = await mysql.getOneRow('operator', {id: socket.decoded_token.id});
             // if (operator['permission_' + table] !== undefined && operator['permission_' + table].indexOf('view') < 0) {
             
-            if (operator['operator_permission'].indexOf(permission) < 0) {
+            if (operator['operator_permission'].indexOf('can' + action + table) < 0) {
                 callback(410);
                 return;
             }
             try {
+                // console.log(table,filers,sort,from,pageSize,fullTextFields,fullTextValue);
+                // console.log('*******************');
                 let result = await mysql.getRowsCustom(table, filers, sort, from, pageSize, fullTextFields, fullTextValue);
                 /*if (foreignKeys[table])
                     result = await mysql.attachForeignKey(result, foreignKeys[table]);*/
@@ -85,11 +87,11 @@ module.exports = function (io) {
             }
         });
         
-        socket.on('saveRow', async function (table,permission ,row, callback) {
+        socket.on('saveRow', async function (table,action ,row, callback) {
             try {
                 let operator = await mysql.getOneRow('operator', {id: socket.decoded_token.id});
                 // if (operator['permission_' + table] !== undefined && operator['permission_' + table].indexOf('update') < 0) {
-                if (operator['operator_permission'].indexOf(permission) < 0) {
+                if (operator['operator_permission'].indexOf('can' + action + table) < 0) {
                    
                     callback(411);
                     return;
@@ -224,19 +226,44 @@ module.exports = function (io) {
                 callback(666, error);
             }
         });
-        socket.on('updateMedia', async function (buffer, mediaId, callback) {
+        socket.on('updateMedia', async function (buffers, table,type,row, callback) {
             try {
-                let fileName = await mysql.media.doUpload(buffer, mediaId);
-                callback(200, fileName);
+
+                if (buffers[0].icon != null && buffers[0].icon != '') {
+                    let icon = await mysql.media.doUpload(buffers[0].icon,type,table);
+                    row.Category_Icon_Image_Name = icon; 
+                }else if(buffers[0].featrured != null && buffers[0].featrured != ''){
+                    let  featrured  = await mysql.media.doUpload(buffers[1].featrured,type,table);
+                    row.Category_Featrured_Image_Name = featrured; 
+                }
+                if (row.id !== undefined && row.id !== 0 && row.id !== "") {
+                    let id;
+                    if (Array.isArray(row.id))
+                        id = row.id[0];
+                    else
+                        id = row.id;
+                    delete row.id;
+                    let result = await mysql.updateRow(table,row, id);
+                    callback(200, result);
+                    return;
+                }
+
+                // callback(200);
             } catch (error) {
                 callback(666, error);
             }
         });
-        socket.on('newMedia', async function (buffer, type, callback) {
+        socket.on('newMedia', async function (buffers,table,type,row, callback) {
             try {
-                let mediaId = await mysql.insertRow('media', {type: type});
-                let fileName = await mysql.media.doUpload(buffer, mediaId);
-                callback(200, fileName);
+                let  icon  = await mysql.media.doUpload(buffers[0].icon,type,table);
+                let  featrured  = await mysql.media.doUpload(buffers[1].featrured,type,table);
+                
+                row.Category_Icon_Image_Name = icon; 
+                row.Category_Featrured_Image_Name = featrured; 
+                
+                let mediaId = await mysql.insertRow(table, row);
+                // let fileName = await mysql.media.doUpload(buffer, mediaId);
+                callback(200);
             } catch (error) {
                 callback(666, error);
             }

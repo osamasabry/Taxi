@@ -556,6 +556,62 @@ module.exports = function (io) {
                 callback(e.message);
             }
         });
+        /**********************new routs***********************/
+        socket.on('getCities', async function (callback) {
+            try {
+                let result = await mysql.getRows('Cities','');
+                // result = await result.map(x => x.coupon);
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
+        socket.on('getCategories', async function (callback) {
+            try {
+                let result = await mysql.getRows('Trips_Categories','');
+                // result = await result.map(x => x.coupon);
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
+        socket.on('getSuppliers', async function (callback) {
+            try {
+                let result = await mysql.getRows('Trips_Suppliers','');
+                // result = await result.map(x => x.coupon);
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
+        socket.on('getClasses', async function (callback) {
+            try {
+                let result = await mysql.getRows('LUT_Classes','');
+                // result = await result.map(x => x.coupon);
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+        
+        socket.on('getTrip', async function (trip_id,callback) {
+            try {
+
+                let result = await mysql.getRows('Trips',{Trip_ID: trip_id});
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
     });
     return io;
 };

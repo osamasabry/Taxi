@@ -26,28 +26,31 @@ module.exports = {
             console.log(err);
         }
     },
-    updateDatabase: async function (mediaId,path) {
-        let result = await sql.query("UPDATE media SET address = ?, path_type = 'relative' WHERE id = ?",[path,mediaId]);
+    updateDatabase: async function (mediaId,path,table) {
+        let result = await sql.query("UPDATE "+table+" SET address = ?, path_type = 'relative' WHERE id = ?",[path,mediaId]);
         return result.affectedRows === 1;
     },
-    doUpload: async function (buffer, mediaId) {
+    doUpload: async function (buffer, mediaType,table) {
         const fileName = shortId.generate() + '.webp';
-        let mediaType = (await this.getById(mediaId)).type;
-        const relativePath = "img/" + mediaType + '/' + fileName;
-        const fullPath = "/srv/" + relativePath;
+        // let mediaType = (await this.getById(mediaId)).type;
+        const relativePath =  mediaType + '/' + fileName;
+        const fullPath = "/home/excursion-app/backend/dashboard/images/" + relativePath;
+
+        console.log(fullPath);
         /*/let newBuffer = await imageMin.buffer(buffer, {
             use: [
                 imageMinWebp({quality: 50})
             ]
         });*/
-        if(!fs.isDir(fullPath))
-            await fs.mkdirp("/srv/img/" + mediaType);
+        if(!fs.isDir(fullPath)){
+            await fs.mkdirp("/home/excursion-app/backend/dashboard/images/" + mediaType);
+        }
         let fd = await fs.openAsync(fullPath, 'a', 0o755);
         await fs.writeAsync(fd, buffer, 'binary');
         await fs.closeAsync(fd);
-        await this.removePicture(mediaId);
-        await this.updateDatabase(mediaId,relativePath);
-        return (await mysql.getOneRow('media', {id: mediaId}));
+        // await this.removePicture(mediaId);
+        // await this.updateDatabase(mediaId,relativePath,table);
+        return relativePath;
     }
 
 };
