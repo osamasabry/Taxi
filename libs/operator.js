@@ -229,13 +229,32 @@ module.exports = function (io) {
         socket.on('updateMedia', async function (buffers, table,type,row, callback) {
             try {
 
+                let icon = '';
+                let  featrured  ='';
                 if (buffers[0].icon != null && buffers[0].icon != '') {
-                    let icon = await mysql.media.doUpload(buffers[0].icon,type,table);
-                    row.Category_Icon_Image_Name = icon; 
-                }else if(buffers[0].featrured != null && buffers[0].featrured != ''){
-                    let  featrured  = await mysql.media.doUpload(buffers[1].featrured,type,table);
-                    row.Category_Featrured_Image_Name = featrured; 
+                     icon = await mysql.media.doUpload(buffers[0].icon,type,table);
                 }
+                if(buffers[1].featrured != null && buffers[1].featrured != ''){
+                    featrured  = await mysql.media.doUpload(buffers[1].featrured,type,table);
+                }
+
+                if (table == 'Trips_Categories') {
+                    if (buffers[0].icon != '') {
+                        row.Category_Icon_Image_Name = icon; 
+                    }
+                    if (buffers[1].featrured != '') {
+                        row.Category_Featrured_Image_Name = featrured; 
+                    }
+                }else if (table == 'Trips') {
+                    if (buffers[0].icon != '') {
+                        row.Trip_Thumbnail_Image_Name = icon; 
+                    }
+                    if (buffers[1].featrured != '') {
+                        row.Trip_OnTripIsFeatured_Image_Name = featrured; 
+                    }
+                }
+                   
+                
                 if (row.id !== undefined && row.id !== 0 && row.id !== "") {
                     let id;
                     if (Array.isArray(row.id))
@@ -255,14 +274,19 @@ module.exports = function (io) {
         });
         socket.on('newMedia', async function (buffers,table,type,row, callback) {
             try {
+
                 let  icon  = await mysql.media.doUpload(buffers[0].icon,type,table);
                 let  featrured  = await mysql.media.doUpload(buffers[1].featrured,type,table);
-                
-                row.Category_Icon_Image_Name = icon; 
-                row.Category_Featrured_Image_Name = featrured; 
+
+                if (table == 'Trips_Categories') {
+                    row.Category_Icon_Image_Name = icon; 
+                    row.Category_Featrured_Image_Name = featrured; 
+                }else if (table == 'Trips') {
+                    row.Trip_Thumbnail_Image_Name = icon; 
+                    row.Trip_OnTripIsFeatured_Image_Name = featrured; 
+                }
                 
                 let mediaId = await mysql.insertRow(table, row);
-                // let fileName = await mysql.media.doUpload(buffer, mediaId);
                 callback(200);
             } catch (error) {
                 callback(666, error);
