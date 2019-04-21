@@ -38,7 +38,56 @@ global.foreignKeys = {
     'payment_request':
         {
             'driver_id':'driver'
-        }
+        },
+    'Cities':
+        {
+            'City_Country_ID':'Countries'
+        },
+    'Reservation_Attachments':
+        {
+            'Attachment_Reservation_ID':'Trips_Reservations'
+        },
+    'Trips':
+        {
+            'Trip_City_ID':'Cities',
+        },
+    'Trips_Busy':
+        {
+            'Trips_Busy_Reservation_ID':'Trips_Reservations',
+            'Trips_Busy_Supplier_Trip_ID':'Trips_Supplier_Trips'
+        },
+    'Trips_Review':
+        {
+            'Trips_Review_Reservation_ID':'Trips_Reservations',
+        },
+    'Trips_Suppliers':
+        {
+            'Supplier_Class_ID':'LUT_Classes',
+            'Supplier_City_ID':'Cities',
+        },
+    'Trips_Supplier_Trips':
+        {
+            'Supplier_Trip_Supplier_ID':'Trips_Suppliers',
+            'Supplier_Trip_Trip_ID':'Trips',
+        },
+    'Trip_Trips_Categories':
+        {
+            'Trips_Trip_ID':'Trips',
+            'Trips_Categories_Category_ID':'Trips_Categories',
+        },
+    'Trip_Trips_Tags':
+        {
+            'Trips_Trip_ID':'Trips',
+            'Trips_Tags_Tag_ID':'Trips_Tags',
+        },
+     'Trips_Reservations':
+        {
+            'Reservation_PaymentMethod_ID':'LUT_Payment_Methods',
+            'Reservation_Status_ID':'LUT_Reservation_Status',
+            'Reservation_Supplier_Trip_ID':'Trips_Supplier_Trips',
+            'Reservation_Rider_ID':'rider'
+        },
+        
 };
 module.exports = function (io) {
     return io.of('/operators').use(socketioJwt.authorize({
@@ -231,13 +280,26 @@ module.exports = function (io) {
 
                 let icon = '';
                 let  featrured  ='';
+                // console.log('*********************************');
+
+                // console.log(buffers[0].icon);
+                // console.log(buffers[1].featrured);
+
+                // console.log('*********************************');
+
                 if (buffers[0].icon != null && buffers[0].icon != '') {
                      icon = await mysql.media.doUpload(buffers[0].icon,type,table);
                 }
                 if(buffers[1].featrured != null && buffers[1].featrured != ''){
                     featrured  = await mysql.media.doUpload(buffers[1].featrured,type,table);
                 }
+                // console.log('*********************************');
 
+                // console.log(icon);
+                // console.log(featrured);
+                // console.log(table);
+                // console.log('*********************************');
+                
                 if (table == 'Trips_Categories') {
                     if (buffers[0].icon != '') {
                         row.Category_Icon_Image_Name = icon; 

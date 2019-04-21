@@ -152,3 +152,14 @@ CREATE TABLE `taxi`.`Trips_Reservations` (
 	`Reservation_Supplier_Trip_ID` INT NOT NULL , 
 	`Reservation_Rider_ID` INT NOT NULL , 
 PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+
+ALTER TABLE `Trips_Supplier_Trips` CHANGE `Supplier_Trip_Cost` `Supplier_Trip_AdultCost` DECIMAL(15,4) NOT NULL;
+
+ALTER TABLE `Trips_Supplier_Trips` CHANGE `Supplier_Trip_Added_Fee` `Supplier_Trip_AdultAddedFee` DECIMAL(15,4) NOT NULL;
+
+ALTER TABLE `Trips_Supplier_Trips` 
+ADD `Supplier_Trip_ChildCost` DECIMAL(15,4) NOT NULL 
+AFTER `Supplier_Trip_AdultAddedFee`,
+ ADD `Supplier_Trip_ChildAddedFee` DECIMAL(15,4) NOT NULL 
+ AFTER `Supplier_Trip_ChildCost`;
