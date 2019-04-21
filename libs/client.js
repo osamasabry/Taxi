@@ -612,6 +612,51 @@ module.exports = function (io) {
             }
         });
 
+        socket.on('getFeaturedTrips', async function (callback) {
+            try {
+
+                let result = await mysql.getRows('Trips',{Trip_Is_Featured:1});
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
+        socket.on('getTripsByCategory', async function (Category_ID,callback) {
+            try {
+
+                let result = await mysql.getRows('Trip_Trips_Categories',{Trips_Categories_Category_ID:Category_ID});
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
+        socket.on('getTripsByTag', async function (Tag_ID,callback) {
+            try {
+
+                let result = await mysql.getRows('Trip_Trips_Tags',{Trips_Tags_Tag_ID:Tag_ID});
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
+        socket.on('getTripsByName', async function (Tag_ID,callback) {
+            try {
+
+                let result = await mysql.getRows('Trip_Trips_Tags',{Trips_Tags_Tag_ID:Tag_ID});
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
+
     });
     return io;
 };

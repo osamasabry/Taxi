@@ -41,6 +41,29 @@ router.post("/operator_login", async function (req, res) {
         }
     }
 });
+
+router.post('/rider_signUp', async function (req, res) {
+    if (process.env.RIDER_MIN_VERSION && req.body.version && parseInt(req.body.version) < process.env.RIDER_MIN_VERSION) {
+        res.json({status: 410});
+        return;
+    }
+    let profile = await mysql.rider.signUp(parseInt(req.body.mobile_number),req.body.user_name);
+    // switch (profile.status) {
+    //     case('blocked'):
+    //         res.json({status: 412});
+    //         return;
+    // }
+    // let keys = {
+    //     id: profile.id,
+    //     prefix: riderPrefix
+    // };
+    // let token = jwt.sign(keys, jwtToken, {});
+    // res.json({status: 200, token: token, user: profile});
+
+    res.json({status: 200, user: profile});
+
+});
+
 router.post('/rider_login', async function (req, res) {
     if (process.env.RIDER_MIN_VERSION && req.body.version && parseInt(req.body.version) < process.env.RIDER_MIN_VERSION) {
         res.json({status: 410});

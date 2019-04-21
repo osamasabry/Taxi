@@ -9,11 +9,21 @@ module.exports = {
     },
     authenticate: async function (mobileNumber) {
         let result = await mysql.getOneRow('rider',{mobile_number:mobileNumber});
-        if(!result) {
-            await sql.query("INSERT INTO rider (mobile_number) VALUES (?)", [mobileNumber]);
-            result = await mysql.getOneRow('rider',{mobile_number:mobileNumber});
-        }
+        // if(!result) {
+        //     await sql.query("INSERT INTO rider (mobile_number) VALUES (?)", [mobileNumber]);
+        //     result = await mysql.getOneRow('rider',{mobile_number:mobileNumber});
+        // }
         return result;
+    },
+    signUp: async function (mobileNumber,user_name) {
+        let flag = false;
+        let result = await mysql.getOneRow('rider',{mobile_number:mobileNumber});
+        if(!result) {
+            await sql.query("INSERT INTO rider (mobile_number,first_name) VALUES (?)", [mobileNumber,user_name]);
+            result = await mysql.getOneRow('rider',{mobile_number:mobileNumber});
+            flag = true;
+        }
+        return flag;
     },
     setProfileImage: async function (riderId, fileName) {
         let [insertMediaResult,ignored] = await sql.query("INSERT INTO media (type,privacy_level,address) VALUES ('rider image','medium',?)",[fileName]);

@@ -163,3 +163,7 @@ ADD `Supplier_Trip_ChildCost` DECIMAL(15,4) NOT NULL
 AFTER `Supplier_Trip_AdultAddedFee`,
  ADD `Supplier_Trip_ChildAddedFee` DECIMAL(15,4) NOT NULL 
  AFTER `Supplier_Trip_ChildCost`;
+
+
+
+ ALTER TABLE `Trips` ADD `Trip_Is_Featured` BOOLEAN NOT NULL DEFAULT FALSE AFTER `Trip_City_ID`;
