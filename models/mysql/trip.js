@@ -1,7 +1,7 @@
 module.exports = {
 
-    getAllCars: async function () {
-        return sql.query("SELECT * FROM car", []);
+    save: async function (json) {
+        return sql.query("SELECT taxi.test("+json+")");
     },
     
 };

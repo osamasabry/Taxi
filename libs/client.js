@@ -218,7 +218,6 @@ module.exports = function (io) {
              callback(travel) ;
         });
 
-
         socket.on('cancelRequest', async function () {
             let travelId = await mysql.travel.getTravelIdByRiderId(socket.decoded_token.id);
             let otherDriverIds = await redis.getRequestDrivers(travelId);
@@ -645,10 +644,20 @@ module.exports = function (io) {
             }
         });
 
-        socket.on('getTripsByName', async function (Tag_ID,callback) {
+        socket.on('getTripsByName', async function (text,callback) {
             try {
 
-                let result = await mysql.getRows('Trip_Trips_Tags',{Trips_Tags_Tag_ID:Tag_ID});
+                let result = await mysql.trip.searchTrip(text);
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
+        socket.on('SaveReservation', async function (json,callback) {
+            try {
+                let result = await mysql.trip.save(json);
                 callback(200, result);
             }
             catch (e) {

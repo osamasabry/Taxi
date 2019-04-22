@@ -60,7 +60,7 @@ router.post('/rider_signUp', async function (req, res) {
     // let token = jwt.sign(keys, jwtToken, {});
     // res.json({status: 200, token: token, user: profile});
 
-    res.json({status: 200, user: profile});
+    res.json({status: 200, flag: profile});
 
 });
 
