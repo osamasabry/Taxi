@@ -655,9 +655,15 @@ module.exports = function (io) {
             }
         });
 
-        socket.on('SaveReservation', async function (json,callback) {
+        socket.on('SaveReservation', async function (buffers,json,callback) {
             try {
                 let result = await mysql.trip.save(json);
+                
+                if (buffers.length > 0 ){ 
+                    for (let buffer of buffers)
+                        await mysql.trip.doUpload(buffer,result);
+                }
+
                 callback(200, result);
             }
             catch (e) {

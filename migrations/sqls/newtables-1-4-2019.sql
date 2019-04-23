@@ -167,3 +167,13 @@ AFTER `Supplier_Trip_AdultAddedFee`,
 
 
  ALTER TABLE `Trips` ADD `Trip_Is_Featured` BOOLEAN NOT NULL DEFAULT FALSE AFTER `Trip_City_ID`;
+
+
+ CREATE TABLE `taxi`.`Trips_Supplier_Calendar` ( 
+ 	`Supplier_Trip_Calendar_ID` INT NOT NULL , 
+ 	`Supplier_Trip_Calendar_Date` TIMESTAMP NOT NULL , 
+ 	`Supplier_Trip_Calendar_MaxReservations` INT NOT NULL , 
+ 	`Supplier_Trip_Calendar_Supplier_Trip_ID` INT NOT NULL , 
+ 	PRIMARY KEY (`Supplier_Trip_Calendar_ID`), 
+ 	INDEX (`Supplier_Trip_Calendar_Supplier_Trip_ID`)) 
+ENGINE = InnoDB;
