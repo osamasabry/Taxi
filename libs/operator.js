@@ -164,6 +164,9 @@ module.exports = function (io) {
                 if (row.id)
                     delete row.id;
                 let result = await mysql.insertRow(table, row);
+                if (table=='Trips_Suppliers')
+                    let data = await mysql.supplier.insertUserSupplier(row,result);
+                
                 callback(200, result);
 
             } catch (error) {
@@ -280,26 +283,13 @@ module.exports = function (io) {
 
                 let icon = '';
                 let  featrured  ='';
-                // console.log('*********************************');
-
-                // console.log(buffers[0].icon);
-                // console.log(buffers[1].featrured);
-
-                // console.log('*********************************');
-
                 if (buffers[0].icon != null && buffers[0].icon != '') {
                      icon = await mysql.media.doUpload(buffers[0].icon,type,table);
                 }
                 if(buffers[1].featrured != null && buffers[1].featrured != ''){
                     featrured  = await mysql.media.doUpload(buffers[1].featrured,type,table);
                 }
-                // console.log('*********************************');
 
-                // console.log(icon);
-                // console.log(featrured);
-                // console.log(table);
-                // console.log('*********************************');
-                
                 if (table == 'Trips_Categories') {
                     if (buffers[0].icon != '') {
                         row.Category_Icon_Image_Name = icon; 
@@ -313,6 +303,13 @@ module.exports = function (io) {
                     }
                     if (buffers[1].featrured != '') {
                         row.Trip_OnTripIsFeatured_Image_Name = featrured; 
+                    }
+                }else if (table == 'Cities') {
+                    if (buffers[0].icon != '') {
+                        row.City_Icon_Image_Name = icon; 
+                    }
+                    if (buffers[1].featrured != '') {
+                        row.City_Featrured_Image_Name = featrured; 
                     }
                 }
                    
@@ -346,6 +343,9 @@ module.exports = function (io) {
                 }else if (table == 'Trips') {
                     row.Trip_Thumbnail_Image_Name = icon; 
                     row.Trip_OnTripIsFeatured_Image_Name = featrured; 
+                }else if (table == 'Cities') {
+                    row.City_Icon_Image_Name = icon; 
+                    row.City_Featrured_Image_Name = featrured; 
                 }
                 
                 let mediaId = await mysql.insertRow(table, row);

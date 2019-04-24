@@ -42,6 +42,23 @@ router.post("/operator_login", async function (req, res) {
     }
 });
 
+router.post("/supplier_login", async function (req, res) {
+
+    try {
+        var supplier = (await mysql.supplier.authenticate(req.query.email, req.query.password));
+        let token = jwt.sign({id: supplier.id}, jwtToken, {});
+        // mysql.operator.setStatus(operator.id,'enabled');
+        res.json({status: 200, token: token, user: supplier});
+    }
+    catch (err) {
+        if (isNaN(err.message)) {
+            res.json({status: 666, error: err.message});
+        } else {
+            res.json({status: err.message});
+        }
+    }
+});
+
 router.post('/rider_signUp', async function (req, res) {
     if (process.env.RIDER_MIN_VERSION && req.body.version && parseInt(req.body.version) < process.env.RIDER_MIN_VERSION) {
         res.json({status: 410});

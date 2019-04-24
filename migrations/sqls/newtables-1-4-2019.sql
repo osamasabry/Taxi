@@ -177,3 +177,89 @@ AFTER `Supplier_Trip_AdultAddedFee`,
  	PRIMARY KEY (`Supplier_Trip_Calendar_ID`), 
  	INDEX (`Supplier_Trip_Calendar_Supplier_Trip_ID`)) 
 ENGINE = InnoDB;
+
+
+ALTER TABLE `Trips_Suppliers` ADD `Supplier_Email` VARCHAR(255) NOT NULL AFTER `Supplier_Name`, ADD UNIQUE (`Supplier_Email`);
+
+CREATE TABLE `taxi`.`Trips_Supplier_Users` ( 
+	`id` INT NOT NULL AUTO_INCREMENT , 
+	`Trips_Supplier_User_Email` VARCHAR(255) NOT NULL , 
+	`Trips_Supplier_User_Password` VARCHAR(255) NOT NULL , 
+	`Trips_Supplier_User_FullName` VARCHAR(255) NOT NULL , 
+	`Trips_Supplier_User_Permissions` JSON NULL , 
+	`Trips_Supplier_User_IsActive` BOOLEAN NOT NULL DEFAULT TRUE , 
+	`Trips_Supplier_User_Supplier_ID` INT NOT NULL , 
+	PRIMARY KEY (`id`), INDEX (`Trips_Supplier_User_Supplier_ID`)) 
+ENGINE = InnoDB;
+
+
+CREATE TABLE `taxi`.`LUT_Reservation_Financials_ActionTypes` ( 
+	`id` INT NOT NULL AUTO_INCREMENT , 
+	`ActionType_Name` VARCHAR(255) NOT NULL , 
+	`ActionType_Describtion` TEXT NULL , 
+	`ActionType_isActive` BOOLEAN NOT NULL DEFAULT TRUE , 
+	PRIMARY KEY (`id`)) 
+ENGINE = InnoDB
+
+
+CREATE TABLE `taxi`.`LUT_Supplier_Withdraw_Request_Status` ( 
+	`id` INT NOT NULL AUTO_INCREMENT , 
+	`Withdraw_Request_Status_Name` VARCHAR(255) NOT NULL , 
+	`Withdraw_Request_Status_Describtion` TEXT NOT NULL , 
+	`Withdraw_Request_Status_isActive` BOOLEAN NOT NULL DEFAULT TRUE , 
+	PRIMARY KEY (`id`)) 
+ENGINE = InnoDB;
+
+
+CREATE TABLE `taxi`.`Trips_Reservation_Supplier_Financials` ( 
+	`id` INT NOT NULL AUTO_INCREMENT , 
+	`Reservation_Supplier_Financials_ActionID` INT NOT NULL , 
+	`Reservation_Supplier_Financials_ActionDate` TIMESTAMP NOT NULL , 
+	`Reservation_Supplier_Financials_Amount` DECIMAL(15,4) NOT NULL , 
+	`Reservation_Supplier_Financials_ActionDetails` TEXT NULL , 
+	`Reservation_Supplier_Financials_ActionNote` TEXT NULL , 
+	`Reservation_Supplier_Financials_Status` BOOLEAN NOT NULL DEFAULT FALSE , 
+	`Reservation_Supplier_Financials_ActionType_ID` INT NOT NULL , 
+	`Reservation_Supplier_Financials_Supplier_ID` INT NOT NULL , 
+	PRIMARY KEY (`id`), 
+	INDEX (`Reservation_Supplier_Financials_ActionID`), 
+	INDEX (`Reservation_Supplier_Financials_ActionType_ID`), 
+	INDEX (`Reservation_Supplier_Financials_Supplier_ID`)) 
+ENGINE = InnoDB;
+
+
+CREATE TABLE `taxi`.`Trips_Supplier_Withdraw` ( 
+	`id` INT NOT NULL AUTO_INCREMENT , 
+	`Withdraw_Date` TIMESTAMP NOT NULL , 
+	`Withdraw_Amount` DECIMAL(15,4) NOT NULL , 
+	`Withdraw_Withdraw_Request_ID` INT NOT NULL , 
+	`Withdraw_Supplier_ID` INT NOT NULL , 
+	`Withdraw_By_Employee_ID` INT NOT NULL , 
+	PRIMARY KEY (`id`), 
+	INDEX (`Withdraw_Withdraw_Request_ID`), 
+	INDEX (`Withdraw_Supplier_ID`), 
+	INDEX (`Withdraw_By_Employee_ID`)) 
+ENGINE = InnoDB;
+
+
+CREATE TABLE `taxi`.`Trips_Supplier_Withdraw_Requests` ( 
+	`id` INT NOT NULL AUTO_INCREMENT , 
+	`Withdraw_Request_Date` TIMESTAMP NOT NULL , 
+	`Withdraw_Request_Amount` DECIMAL(15,4) NOT NULL , 
+	`Withdraw_Request_Status_ID` INT NOT NULL , 
+	`Withdraw_Supplier_ID` INT NOT NULL , 
+	PRIMARY KEY (`id`), 
+	INDEX (`Withdraw_Request_Status_ID`), 
+	INDEX (`Withdraw_Supplier_ID`)) 
+ENGINE = InnoDB;
+
+
+ALTER TABLE `Trips_Supplier_Users` CHANGE 
+`Trips_Supplier_User_Permissions` 
+`Trips_Supplier_User_Permissions` 
+TEXT NULL DEFAULT NULL;
+
+
+ALTER TABLE `Trips_Supplier_Users` ADD 
+`Trips_Supplier_User_IsOwner` BOOLEAN NOT NULL DEFAULT FALSE AFTER 
+`Trips_Supplier_User_Supplier_ID`;
