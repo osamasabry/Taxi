@@ -87,6 +87,31 @@ global.foreignKeys = {
             'Reservation_Supplier_Trip_ID':'Trips_Supplier_Trips',
             'Reservation_Rider_ID':'rider'
         },
+    'Trips_Supplier_Calendar':
+        {
+            'Supplier_Trip_Calendar_Supplier_Trip_ID':'Trips_Supplier_Trips'
+        },
+    'Trips_Reservation_Supplier_Financials':
+        {
+            'Reservation_Supplier_Financials_ActionID':'Trips_Reservations',
+            'Reservation_Supplier_Financials_ActionType_ID':'LUT_Reservation_Financials_ActionTypes',
+            'Reservation_Supplier_Financials_Supplier_ID':'Trips_Suppliers'
+        },
+    'Trips_Supplier_Users':
+        {
+            'Trips_Supplier_User_Supplier_ID':'Trips_Suppliers'
+        },
+
+     'Trips_Supplier_Withdraw_Requests':
+        {
+            'Withdraw_Request_Status_ID':'LUT_Supplier_Withdraw_Request_Status',
+            'Withdraw_Supplier_ID':'Trips_Suppliers'
+        },
+    'Trips_Supplier_Withdraw':
+        {
+            'Withdraw_Withdraw_Request_ID':'Trips_Supplier_Withdraw_Requests',
+            'Withdraw_Supplier_ID':'Trips_Suppliers'
+        },    
         
 };
 module.exports = function (io) {
