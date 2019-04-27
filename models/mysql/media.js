@@ -34,7 +34,7 @@ module.exports = {
         const fileName = shortId.generate() + '.webp';
         // let mediaType = (await this.getById(mediaId)).type;
         const relativePath =  mediaType + '/' + fileName;
-        const fullPath = "/home/excursion-app/backend/dashboard/images/" + relativePath;
+        const fullPath = "/home/going-operator/htdocs/images/" + relativePath;
 
         console.log(fullPath);
         /*/let newBuffer = await imageMin.buffer(buffer, {
@@ -43,7 +43,7 @@ module.exports = {
             ]
         });*/
         if(!fs.isDir(fullPath)){
-            await fs.mkdirp("/home/excursion-app/backend/dashboard/images/" + mediaType);
+            await fs.mkdirp("/home/going-operator/htdocs/images/" + mediaType);
         }
         let fd = await fs.openAsync(fullPath, 'a', 0o755);
         await fs.writeAsync(fd, buffer, 'binary');

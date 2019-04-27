@@ -188,10 +188,17 @@ module.exports = function (io) {
                 }
                 if (row.id)
                     delete row.id;
-                let result = await mysql.insertRow(table, row);
-                if (table=='Trips_Suppliers')
-                    let data = await mysql.supplier.insertUserSupplier(row,result);
-                
+
+                var result = '';
+                if (table =='Trips_Suppliers'){
+                    let password = row.Trips_Supplier_User_Password;
+                    delete row.Trips_Supplier_User_Password;
+                    let id = await mysql.insertRow(table, row);
+                     result = await mysql.supplier.insertUserSupplier(row,password,id);
+                    console.log(result);
+                }else{
+                    let result = await mysql.insertRow(table, row);
+                }
                 callback(200, result);
 
             } catch (error) {

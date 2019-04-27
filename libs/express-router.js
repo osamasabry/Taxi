@@ -24,7 +24,24 @@ const allowedExt = [
     '.ttf',
     '.svg',
     '*'
-  ];
+//   ];
+
+// router.post("/test", async function (req, res) {
+
+//     try {
+        
+//         // console.log(req.query.text);
+//         let result = await mysql.trip.getFeaturedTrips(1);
+        
+//         console.log(result);
+//         res.json({status: 200, result: result})
+
+//     }
+//     catch (err) {
+//         console.log(err);
+//     }
+// });
+
 router.post("/operator_login", async function (req, res) {
 
     try {

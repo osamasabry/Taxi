@@ -19,7 +19,7 @@ module.exports = {
         let flag = false;
         let result = await mysql.getOneRow('rider',{mobile_number:mobileNumber});
         if(!result) {
-            await sql.query("INSERT INTO rider (mobile_number,first_name) VALUES (?)", [mobileNumber,user_name]);
+            await sql.query("INSERT INTO rider (mobile_number,first_name) VALUES (?,?)", [mobileNumber,user_name]);
             result = await mysql.getOneRow('rider',{mobile_number:mobileNumber});
             flag = true;
         }

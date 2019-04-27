@@ -263,3 +263,11 @@ TEXT NULL DEFAULT NULL;
 ALTER TABLE `Trips_Supplier_Users` ADD 
 `Trips_Supplier_User_IsOwner` BOOLEAN NOT NULL DEFAULT FALSE AFTER 
 `Trips_Supplier_User_Supplier_ID`;
+
+
+
+ALTER TABLE `Countries` ADD `Country_PhoneCode` VARCHAR(255) NULL AFTER `Country_Name`;
+
+
+
+ALTER TABLE `Countries` ADD `Country_AppUsed_Currency_ID` INT NULL AFTER `Country_PhoneCode`, ADD INDEX (`Country_AppUsed_Currency_ID`);
