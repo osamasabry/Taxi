@@ -41,17 +41,44 @@ const bodyParser = require('body-parser');
             app.use('/img', express.static(__dirname + "/public/img"));
             app.use(express.static('/srv/'));
             app.use(require("./libs/express-router"));
-            let server = require('http').createServer(app);
+
+            var options = {
+                key:    fs.readFileSync('/home/going-operator/certs/server.key'),
+                cert:   fs.readFileSync('/home/going-operator/certs/server.crt'),
+                ca:     fs.readFileSync('/home/going-operator/certs/server.ca-bundle')
+            };
+            let server = require('https').createServer(options,app);
             const io = require("socket.io").listen(server);
             global.operatorsNamespace = require("./libs/operator")(io);
             require("./libs/client")(io);
             require("./libs/trip-operator")(io);
 
             process.on('unhandledRejection', r => console.log(r));
-            server.listen(3211, function () {
-                console.log("Listening on " + 3211);
+            server.listen(8080, function () {
+                console.log("Listening on " + 8080);
 
             });
+
+
+            // let https = require('https');
+            // var options = {
+            //     key:    fs.readFileSync('/home/going-operator/certs/server.key'),
+            //     cert:   fs.readFileSync('/home/going-operator/certs/server.crt'),
+            //     ca:     fs.readFileSync('/home/going-operator/certs/server.ca-bundle')
+            // };
+            // const io = require("socket.io").listen(https);
+            // global.operatorsNamespace = require("./libs/operator")(io);
+            // require("./libs/client")(io);
+            // require("./libs/trip-operator")(io);
+
+            // // SSLCertificateFile	"/home/going-operator/certs/server.crt"
+            // // SSLCertificateKeyFile "/home/going-operator/certs/server.key"
+            // process.on('unhandledRejection', r => console.log(r));
+            // https.createServer(options,app).listen(8080, function () {
+            //     console.log("Listening on " + 8080);
+
+            // });
+
     // } else {
     //     throw new Error(result.message);
     // }
