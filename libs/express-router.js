@@ -24,7 +24,7 @@ const allowedExt = [
     '.ttf',
     '.svg',
     '*'
-//   ];
+  ];
 
 // router.post("/test", async function (req, res) {
 
