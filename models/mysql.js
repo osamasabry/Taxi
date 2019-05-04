@@ -4,16 +4,16 @@ global.GROUP_BY_MONTH = 2;
 const mysql = require("mysql2/promise");
 let config = {
     connectionLimit: 100,
-    host: 'localhost',
+    host: '35.246.191.111',
     user: 'root',
-    password: 'iti',
-    database: 'limousine',
+    password: 'Ma13579',
+    database: 'taxi',
     debug: false,
     multipleStatements: true
 };
 
-mysql.createConnection({host: 'localhost', user: 'root', password: 'iti'}).then(function (resCon) {
-    resCon.query("CREATE DATABASE IF NOT EXISTS " + 'limousine', []).then(async function (result) {
+mysql.createConnection({host: '35.246.191.111', user: 'root', password: 'Ma13579'}).then(function (resCon) {
+    resCon.query("CREATE DATABASE IF NOT EXISTS " + 'taxi', []).then(async function (result) {
         dbMigrate.sync('20190208165024-braintree').then(async function (resMigrate) {
             global.sql = await mysql.createPool(config);
             require('./../libs/update-handler').init();
@@ -84,12 +84,15 @@ module.exports = {
         }
     },
     getRowsCustom: async function (table, filers, sort, from, pageSize, fullTextFields, fullTextValue) {
+        
+        // console.log(table,filers,sort,from,pageSize,fullTextFields,fullTextValue);
         let query = '';
         let whereClauses = [];
         let queryArguments = [];
         if (fullTextValue !== "" && fullTextValue !== null)
             whereClauses.push(fullTextFields.join('|') + " LIKE '%" + fullTextValue + "%'");
         for (const filter in filers) {
+            
             if (filers.hasOwnProperty(filter) && filers[filter] && filers[filter] !== '') {
                 whereClauses.push(filter + " = ?");
                 queryArguments.push(filers[filter]);
@@ -167,5 +170,5 @@ module.exports = {
     address: require('./mysql/address'),
     media: require('./mysql/media'),
     trip: require('./mysql/trip'),
-    country: require('./mysql/country'),
+    supplier: require('./mysql/supplier'),
 };

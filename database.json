@@ -2,10 +2,10 @@
   "sql-file": true,
   "dev": {
     "driver": "mysql",
-    "host": "localhost",
+    "host": "35.246.191.111",
     "user": "root",
-    "password": "iti",
-    "database": "limousine",
+    "password": "Ma13579",
+    "database": "taxi",
     "multipleStatements": true
   },
   "prod": {
