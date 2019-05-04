@@ -26,21 +26,36 @@ const allowedExt = [
     '*'
   ];
 
-// router.post("/test", async function (req, res) {
+// 
 
-//     try {
-        
-//         // console.log(req.query.text);
-//         let result = await mysql.trip.getFeaturedTrips(1);
-        
-//         console.log(result);
-//         res.json({status: 200, result: result})
+router.post("/test", async function (req, res) {
 
-//     }
-//     catch (err) {
-//         console.log(err);
-//     }
-// });
+    try {
+        
+        // console.log(req.query.text);
+        let result = await mysql.trip.getOneRow(4);
+        
+        console.log(result);
+        res.json({status: 200, result: result[0]})
+
+    }
+    catch (err) {
+        console.log(err);
+    }
+});
+
+router.post("/getCountries", async function (req, res) {
+
+    try {
+        let result = await mysql.getRows('Countries','');
+        res.json({status: 200, result: result})
+
+    }
+    catch (err) {
+        console.log(err);
+    }
+});
+
 
 router.post("/operator_login", async function (req, res) {
 

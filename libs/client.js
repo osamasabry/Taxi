@@ -556,6 +556,8 @@ module.exports = function (io) {
             }
         });
         /**********************new routs***********************/
+        
+
         socket.on('getCities', async function (callback) {
             try {
                 let result = await mysql.getRows('Cities','');
@@ -600,11 +602,11 @@ module.exports = function (io) {
             }
         });
         
-        socket.on('getTrip', async function (trip_id,callback) {
+        socket.on('getTrip', async function (Supplier_Trip_Trip_ID,callback) {
             try {
 
-                let result = await mysql.getRows('Trips',{Trip_ID: trip_id});
-                callback(200, result);
+                let result = await mysql.trip.getOneRow(Supplier_Trip_Trip_ID);
+                callback(200, result[0]);
             }
             catch (e) {
                 callback(666, e.message);
@@ -671,6 +673,15 @@ module.exports = function (io) {
             }
         });
 
+        socket.on('AvailableTrip', async function (callback) {
+            try {
+                let result = await mysql.trip.getAvailableTrip();
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
 
     });
     return io;
