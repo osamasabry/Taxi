@@ -28,21 +28,38 @@ const allowedExt = [
 
 // 
 
-router.post("/test", async function (req, res) {
+// router.post("/test", async function (req, res) {
+
+//     try {
+        
+//         // console.log(req.query.text);
+//         let result = await mysql.trip.getOneRow(4);
+        
+//         console.log(result);
+//         res.json({status: 200, result: result[0]})
+
+//     }
+//     catch (err) {
+//         console.log(err);
+//     }
+// });
+
+
+router.post("/public", async function (req, res) {
 
     try {
-        
-        // console.log(req.query.text);
-        let result = await mysql.trip.getOneRow(4);
-        
-        console.log(result);
-        res.json({status: 200, result: result[0]})
-
+        let token = jwt.sign('', jwtToken, {});
+        res.json({status: 200, token: token});
     }
     catch (err) {
-        console.log(err);
+        if (isNaN(err.message)) {
+            res.json({status: 666, error: err.message});
+        } else {
+            res.json({status: err.message});
+        }
     }
 });
+
 
 router.post("/getCountries", async function (req, res) {
 
