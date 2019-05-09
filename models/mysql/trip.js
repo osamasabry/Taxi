@@ -42,9 +42,9 @@ module.exports = {
         let [result, ignored] = await sql.query("SELECT ttg.Trips_Trip_ID , t.Trip_Name,t.Trip_Thumbnail_Image_Name,t.Trip_OnTripIsFeatured_Image_Name,tst.Supplier_Trip_Trip_ID ,min(tst.Supplier_Trip_AdultCost + tst.Supplier_Trip_AdultAddedFee) as price  from Trip_Trips_Categories as ttg , Trips as t, Trips_Supplier_Trips as tst  WHERE ttg.Trips_Categories_Category_ID = "+Category_ID+" And ttg.Trips_Trip_ID = t.id And t.Trip_City_ID = "+City_id+" And t.id = tst.Supplier_Trip_Trip_ID GROUP by tst.Supplier_Trip_Trip_ID");
          return result;
     },
-
-    getAvailableTrip: async function () {
-        let [result, ignored] = await sql.query("SELECT * FROM taxi.SupplierTripsFullDataByAvailableSeats_View");
+ 
+    getAvailableTrip: async function (date,count) {
+        let [result, ignored] = await sql.query("SELECT * FROM taxi.SupplierTripsFullDataByAvailableSeats_View WHERE RemainingSeats >= "+count+" And (TripBusyAndSupplierCalenderDate="+date+" or TripBusyAndSupplierCalenderDate IS NULL");
          return result;
     },
     

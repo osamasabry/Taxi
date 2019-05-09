@@ -673,9 +673,9 @@ module.exports = function (io) {
             }
         });
 
-        socket.on('AvailableTrip', async function (callback) {
+        socket.on('AvailableTrip', async function (date,count,callback) {
             try {
-                let result = await mysql.trip.getAvailableTrip();
+                let result = await mysql.trip.getAvailableTrip(date,count);
                 callback(200, result);
             }
             catch (e) {
