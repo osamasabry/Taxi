@@ -48,7 +48,7 @@ const allowedExt = [
 router.post("/public", async function (req, res) {
 
     try {
-        let token = jwt.sign('', jwtToken, {});
+        let token = jwt.sign({id: 1}, jwtToken, {});
         res.json({status: 200, token: token});
     }
     catch (err) {
