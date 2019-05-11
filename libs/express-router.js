@@ -28,21 +28,21 @@ const allowedExt = [
 
 // 
 
-// router.post("/test", async function (req, res) {
+router.post("/test", async function (req, res) {
 
-//     try {
+    try {
         
-//         // console.log(req.query.text);
-//         let result = await mysql.trip.getOneRow(4);
+        // console.log(req.query.text);
+        let result = await mysql.trip.getAvailableTrip('2019-04-22',5);
         
-//         console.log(result);
-//         res.json({status: 200, result: result[0]})
+        console.log(result);
+        res.json({status: 200, result: result[0]})
 
-//     }
-//     catch (err) {
-//         console.log(err);
-//     }
-// });
+    }
+    catch (err) {
+        console.log(err);
+    }
+});
 
 
 router.post("/public", async function (req, res) {
@@ -113,7 +113,7 @@ router.post('/rider_signUp', async function (req, res) {
         res.json({status: 410});
         return;
     }
-    let profile = await mysql.rider.signUp(parseInt(req.body.mobile_number),req.body.user_name);
+    let profile = await mysql.rider.signUp(parseInt(req.body.mobile_number),req.body.user_name,parseInt(req.body.phone_code));
     // switch (profile.status) {
     //     case('blocked'):
     //         res.json({status: 412});

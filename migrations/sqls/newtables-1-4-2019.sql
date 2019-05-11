@@ -271,3 +271,13 @@ ALTER TABLE `Countries` ADD `Country_PhoneCode` VARCHAR(255) NULL AFTER `Country
 
 
 ALTER TABLE `Countries` ADD `Country_AppUsed_Currency_ID` INT NULL AFTER `Country_PhoneCode`, ADD INDEX (`Country_AppUsed_Currency_ID`);
+
+
+ALTER TABLE `Cities` ADD `City_Description` TEXT NULL AFTER `City_Name`, ADD `City_CoverPage_Name` VARCHAR(500) NULL AFTER `City_Description`, ADD `City_Featured_Image_Web` VARCHAR(500) NULL AFTER `City_CoverPage_Name`;
+ALTER TABLE `Cities` ADD `City_Permalink` VARCHAR(255) NULL AFTER `City_Featured_Image_Web`;
+
+ALTER TABLE `operator` ADD `phone_code` VARCHAR(10) NULL AFTER `mobile_number`;
+
+ALTER TABLE `Trips_Categories` ADD `Category_Permalink` VARCHAR(255) NULL AFTER `Category_Description`, ADD `Category_Featured_Image_Web` VARCHAR(255) NULL AFTER `Category_Permalink`, ADD `Category_CoverPage_Name` VARCHAR(255) NULL AFTER `Category_Featured_Image_Web`;
+
+ALTER TABLE `Trips` ADD `Trip_Duration` VARCHAR(255) NULL AFTER `Trip_Creation_Date`, ADD `Movement_Time` VARCHAR(255) NULL AFTER `Trip_Duration`;

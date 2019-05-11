@@ -315,11 +315,25 @@ module.exports = function (io) {
 
                 let icon = '';
                 let  featrured  ='';
+
+                let cover_page ='';
+                let featured_web ='';
+
                 if (buffers[0].icon != null && buffers[0].icon != '') {
                      icon = await mysql.media.doUpload(buffers[0].icon,type,table);
                 }
                 if(buffers[1].featrured != null && buffers[1].featrured != ''){
                     featrured  = await mysql.media.doUpload(buffers[1].featrured,type,table);
+                }
+
+
+                if (table != 'Trips') {
+                    if (buffers[2].coverPage != null && buffers[0].icon != '') {
+                        cover_page  = await mysql.media.doUpload(buffers[2].coverPage,type,table);
+                    }
+                    if (buffers[3].featuredWeb != null && buffers[0].icon != '') {
+                        featured_web  = await mysql.media.doUpload(buffers[3].featuredWeb,type,table);
+                    }
                 }
 
                 if (table == 'Trips_Categories') {
@@ -329,6 +343,13 @@ module.exports = function (io) {
                     if (buffers[1].featrured != '') {
                         row.Category_Featrured_Image_Name = featrured; 
                     }
+                    if (buffers[2].icon != '') {
+                        row.Category_CoverPage_Name = cover_page; 
+                    }
+                    if (buffers[3].featrured != '') {
+                        row.Category_Featured_Image_Web = featured_web; 
+                    }
+
                 }else if (table == 'Trips') {
                     if (buffers[0].icon != '') {
                         row.Trip_Thumbnail_Image_Name = icon; 
@@ -342,6 +363,12 @@ module.exports = function (io) {
                     }
                     if (buffers[1].featrured != '') {
                         row.City_Featrured_Image_Name = featrured; 
+                    }
+                    if (buffers[2].icon != '') {
+                        row.City_CoverPage_Name = cover_page; 
+                    }
+                    if (buffers[3].featrured != '') {
+                        row.City_Featured_Image_Web = featured_web; 
                     }
                 }
                    
@@ -369,15 +396,27 @@ module.exports = function (io) {
                 let  icon  = await mysql.media.doUpload(buffers[0].icon,type,table);
                 let  featrured  = await mysql.media.doUpload(buffers[1].featrured,type,table);
 
+                let cover_page ='';
+                let featured_web ='';
+
+                if (table != 'Trips') {
+                    cover_page  = await mysql.media.doUpload(buffers[2].coverPage,type,table);
+                    featured_web  = await mysql.media.doUpload(buffers[3].featuredWeb,type,table);
+                }
+
                 if (table == 'Trips_Categories') {
                     row.Category_Icon_Image_Name = icon; 
                     row.Category_Featrured_Image_Name = featrured; 
+                    row.Category_CoverPage_Name = cover_page; 
+                    row.Category_Featured_Image_Web = featured_web;
                 }else if (table == 'Trips') {
                     row.Trip_Thumbnail_Image_Name = icon; 
                     row.Trip_OnTripIsFeatured_Image_Name = featrured; 
                 }else if (table == 'Cities') {
                     row.City_Icon_Image_Name = icon; 
-                    row.City_Featrured_Image_Name = featrured; 
+                    row.City_Featrured_Image_Name = featrured;
+                    row.City_CoverPage_Name = cover_page; 
+                    row.City_Featured_Image_Web = featured_web; 
                 }
                 
                 let mediaId = await mysql.insertRow(table, row);
