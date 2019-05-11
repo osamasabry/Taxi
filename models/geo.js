@@ -2,7 +2,7 @@ const geoLib = require('geolib');
 const bluebird = require('bluebird');
 const gMapObject = bluebird.promisifyAll(require('@google/maps'));
 const gMap = gMapObject.createClient({
-    key: 'AIzaSyDrVRA-2bcjszrXgKfGjtBNyBs47hFGyNI',
+    key: 'AIzaSyAyuiQT1Z2xv22tMNKXSXrkApvEw8XEr8Y', //'AIzaSyDrVRA-2bcjszrXgKfGjtBNyBs47hFGyNI'
     Promise: Promise
 });
 module.exports.orderCoordinates = orderCoordinates;
