@@ -281,3 +281,7 @@ ALTER TABLE `operator` ADD `phone_code` VARCHAR(10) NULL AFTER `mobile_number`;
 ALTER TABLE `Trips_Categories` ADD `Category_Permalink` VARCHAR(255) NULL AFTER `Category_Description`, ADD `Category_Featured_Image_Web` VARCHAR(255) NULL AFTER `Category_Permalink`, ADD `Category_CoverPage_Name` VARCHAR(255) NULL AFTER `Category_Featured_Image_Web`;
 
 ALTER TABLE `Trips` ADD `Trip_Duration` VARCHAR(255) NULL AFTER `Trip_Creation_Date`, ADD `Trip_MoveTime` VARCHAR(255) NULL AFTER `Trip_Duration`;
+
+ALTER TABLE `Trips` ADD `Trip_Permalink` VARCHAR(255) NULL AFTER `Trip_Description`;
+
+ALTER TABLE `Trips_Reservations` ADD `Reservation_Hotel_Name` VARCHAR(255) NULL AFTER `Reservation_PickupDate`, ADD `Reservation_Room_Number` VARCHAR(255) NULL AFTER `Reservation_Hotel_Name`;
