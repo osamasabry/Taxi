@@ -100,6 +100,7 @@ module.exports = {
         }
         if (whereClauses.length > 0)
             query += " WHERE " + whereClauses.join(" AND ");
+        // console.log("SELECT COUNT(id) AS count FROM " + table + query, queryArguments)
         let [count, ignored2] = await sql.query("SELECT COUNT(id) AS count FROM " + table + query, queryArguments);
         count = count[0].count;
         if (count === 0)

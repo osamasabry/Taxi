@@ -147,7 +147,6 @@ module.exports = function (io) {
                 return;
             }
             try {
-                // console.log(table,filers,sort,from,pageSize,fullTextFields,fullTextValue);
                 // console.log('*******************');
                 let result = await mysql.getRowsCustom(table, filers, sort, from, pageSize, fullTextFields, fullTextValue);
                 /*if (foreignKeys[table])
