@@ -44,7 +44,7 @@ module.exports = {
     },
  
     getAvailableTrip: async function (date,count) {
-        let [result, ignored] = await sql.query("SELECT * FROM taxi.SupplierTripsFullDataByAvailableSeats_View WHERE RemainingSeats >= "+count+" And (TripBusyAndSupplierCalenderDate="+date+" or TripBusyAndSupplierCalenderDate IS NULL");
+        let [result, ignored] = await sql.query("SELECT * FROM taxi.SupplierTripsFullDataByAvailableSeats_View WHERE RemainingSeats >= "+count+" And (TripBusyAndSupplierCalenderDate="+date+" or TripBusyAndSupplierCalenderDate IS NULL)");
          return result;
     },
     
