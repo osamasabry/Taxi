@@ -1,7 +1,7 @@
 module.exports = {
 
     authenticate: async function (userName, password) {
-        let [result, ignored] = await sql.query("SELECT * FROM Trips_Supplier_Users WHERE Trips_Supplier_User_Email = ? And Trips_Supplier_User_Password = ?", [email, password]);
+        let [result, ignored] = await sql.query("SELECT * FROM Trips_Supplier_Users WHERE Trips_Supplier_User_Email = ? And Trips_Supplier_User_Password = ?", [userName, password]);
         if (result.length !== 1) {
             throw new Error(300);
         }
