@@ -560,6 +560,7 @@ module.exports = function (io) {
 
         socket.on('getCities', async function (callback) {
             try {
+                console.log('oooo');
                 let result = await mysql.getRows('Cities','');
                 callback(200, result);
             }

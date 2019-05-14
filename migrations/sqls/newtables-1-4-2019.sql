@@ -276,7 +276,7 @@ ALTER TABLE `Countries` ADD `Country_AppUsed_Currency_ID` INT NULL AFTER `Countr
 ALTER TABLE `Cities` ADD `City_Description` TEXT NULL AFTER `City_Name`, ADD `City_CoverPage_Name` VARCHAR(500) NULL AFTER `City_Description`, ADD `City_Featured_Image_Web` VARCHAR(500) NULL AFTER `City_CoverPage_Name`;
 ALTER TABLE `Cities` ADD `City_Permalink` VARCHAR(255) NULL AFTER `City_Featured_Image_Web`;
 
-ALTER TABLE `operator` ADD `phone_code` VARCHAR(10) NULL AFTER `mobile_number`;
+ALTER TABLE `rider` ADD `phone_code` VARCHAR(10) NULL AFTER `mobile_number`;
 
 ALTER TABLE `Trips_Categories` ADD `Category_Permalink` VARCHAR(255) NULL AFTER `Category_Description`, ADD `Category_Featured_Image_Web` VARCHAR(255) NULL AFTER `Category_Permalink`, ADD `Category_CoverPage_Name` VARCHAR(255) NULL AFTER `Category_Featured_Image_Web`;
 
@@ -287,3 +287,78 @@ ALTER TABLE `Trips` ADD `Trip_Permalink` VARCHAR(255) NULL AFTER `Trip_Descripti
 ALTER TABLE `Trips_Reservations` ADD `Reservation_Hotel_Name` VARCHAR(255) NULL AFTER `Reservation_PickupDate`, ADD `Reservation_Room_Number` VARCHAR(255) NULL AFTER `Reservation_Hotel_Name`;
 
 ALTER TABLE `Trips` ADD `Trip_OneLineDescription` VARCHAR(255) NULL AFTER `Trip_Description`;
+
+CREATE TABLE `taxi`.`Trips_Additional_Images` ( 
+	`id` INT NOT NULL AUTO_INCREMENT , 
+	`Trip_Attachment_FilePath` VARCHAR(255) NOT NULL , 
+	`Trip_Attachment_Trip_ID` INT NOT NULL , 
+	PRIMARY KEY (`id`), 
+	INDEX (`Trip_Attachment_Trip_ID`))
+ENGINE = InnoDB;
+
+
+CREATE TABLE `taxi`.`LUT_Complain_Department` ( 
+	`id` INT NOT NULL AUTO_INCREMENT , 
+	`ComplainDepartment_Name` VARCHAR(255) NOT NULL , 
+	`ComplainDepartment_Describtion` TEXT NULL , 
+	PRIMARY KEY (`id`)) 
+ENGINE = InnoDB;
+
+
+CREATE TABLE `taxi`.`LUT_Complain_Status` ( 
+	`id` INT NOT NULL AUTO_INCREMENT , 
+	`ComplainStatus_Name` VARCHAR(255) NOT NULL , 
+	`ComplainStatus_Describtion` TEXT NULL , 
+	PRIMARY KEY (`id`)) 
+ENGINE = InnoDB;
+
+
+CREATE TABLE `taxi`.`LUT_Complain_CloseType` ( 
+	`id` INT NOT NULL AUTO_INCREMENT , 
+	`ComplainCloseType_Name` VARCHAR(255) NOT NULL , 
+	`ComplainCloseType_Describtion` TEXT NULL , 
+	PRIMARY KEY (`id`)) 
+ENGINE = InnoDB;
+
+
+CREATE TABLE `taxi`.`Complain` ( 
+	`id` INT NOT NULL AUTO_INCREMENT , 
+	`Complain_Title` VARCHAR(500) NOT NULL , 
+	`Complain_Date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+	`Complain_Close_Date` TIMESTAMP NULL , 
+	`Complain_Reservation_ID` INT NOT NULL , 
+	`Complain_Travel_ID` INT NOT NULL , 
+	`Complain_CloseType_ID` INT NOT NULL , 
+	`Complain_ComplainDepartment_ID` INT NOT NULL , 
+	`Complain_Status_ID` INT NOT NULL , 
+	`Complain_Rider_ID` INT NOT NULL , 
+	`Complain_Driver_ID` INT NOT NULL , 
+	PRIMARY KEY (`id`), 
+	INDEX (`Complain_Driver_ID`), 
+	INDEX (`Complain_Rider_ID`), 
+	INDEX (`Complain_Status_ID`), 
+	INDEX (`Complain_ComplainDepartment_ID`), 
+	INDEX (`Complain_CloseType_ID`), 
+	INDEX (`Complain_Travel_ID`), 
+	INDEX (`Complain_Reservation_ID`)) 
+ENGINE = InnoDB;
+
+CREATE TABLE `taxi`.`Complain_Arguments` ( 
+	`id` INT NOT NULL AUTO_INCREMENT , 
+	`ComplainArgument_Date` TIMESTAMP NOT NULL , 
+	`ComplainArgument_Details` TEXT NOT NULL , 
+	`ComplainArgument_IssuedBy_Type` INT NOT NULL , 
+	`ComplainArgument_Operator_ID` INT NOT NULL , 
+	`ComplainArgument_Complain_ID` INT NOT NULL , 
+	PRIMARY KEY (`id`), 
+	INDEX (`ComplainArgument_Operator_ID`), 
+	INDEX (`ComplainArgument_Complain_ID`)) 
+ENGINE = InnoDB;
+
+CREATE TABLE `taxi`.`Complain_Arguments_Attachment` ( 
+	`id` INT NOT NULL AUTO_INCREMENT , 
+	`Complain_ArgumentTitle` VARCHAR(500) NOT NULL , 
+	`ComplainArgumentAttachment_filename` VARCHAR(255) NOT NULL , 
+	`ComplainArgument_ID` INT NOT NULL , PRIMARY KEY (`id`), 
+	INDEX (`ComplainArgument_ID`)) 
+ENGINE = InnoDB;

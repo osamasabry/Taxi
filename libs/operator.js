@@ -135,6 +135,7 @@ module.exports = function (io) {
         });
 
         socket.on('getRows', async function (table,action ,filers, sort, from, pageSize, fullTextFields, fullTextValue, callback) {
+            
             if (fullTextValue === null && fullTextFields === null) {
                 callback(100);
                 return;
@@ -160,6 +161,32 @@ module.exports = function (io) {
             }
         });
         
+
+        socket.on('getRowsSupplier', async function (table,action ,filers, sort, from, pageSize, fullTextFields, fullTextValue, callback) {
+            
+            if (fullTextValue === null && fullTextFields === null) {
+                callback(100);
+                return;
+            }
+            let supplier = await mysql.getOneRow('Trips_Supplier_Users', {id: socket.decoded_token.id});
+            // if (operator['permission_' + table] !== undefined && operator['permission_' + table].indexOf('view') < 0) {
+            
+            if (supplier['Trips_Supplier_User_Permissions'].indexOf('can' + action + table) < 0) {
+                callback(410);
+                return;
+            }
+            try {
+                let result = await mysql.getRowsCustom(table, filers, sort, from, pageSize, fullTextFields, fullTextValue);
+                /*if (foreignKeys[table])
+                    result = await mysql.attachForeignKey(result, foreignKeys[table]);*/
+                callback(200, result);
+            } catch (error) {
+                if(error.message !== undefined)
+                    callback(666, error.message);
+                else
+                    callback(666,error);
+            }
+        });
         socket.on('saveRow', async function (table,action ,row, callback) {
             try {
                 let operator = await mysql.getOneRow('operator', {id: socket.decoded_token.id});
@@ -196,8 +223,48 @@ module.exports = function (io) {
                      result = await mysql.supplier.insertUserSupplier(row,password,id);
                     console.log(result);
                 }else{
-                    let result = await mysql.insertRow(table, row);
+                     result = await mysql.insertRow(table, row);
                 }
+                callback(200, result);
+
+            } catch (error) {
+                if(error.message !== undefined)
+                    callback(666, error.message);
+                else
+                    callback(666,error);
+            }
+        });
+
+        socket.on('saveRowSupplier', async function (table,action ,row, callback) {
+            try {
+                let supplier = await mysql.getOneRow('Trips_Supplier_Users', {id: socket.decoded_token.id});
+                // if (operator['permission_' + table] !== undefined && operator['permission_' + table].indexOf('update') < 0) {
+                if (supplier['Trips_Supplier_User_Permissions'].indexOf('can' + action + table) < 0) {
+                   
+                    callback(411);
+                    return;
+                }
+                //TODO:Dirty fix for null id rows. do it properly
+                if (row.media_id !== undefined && row.media_id === "")
+                    delete row.media_id;
+                if (row.car_id !== undefined && row.car_id === "")
+                    delete row.car_id;
+                if (row.id !== undefined && row.id !== 0 && row.id !== "") {
+                    let id;
+                    if (Array.isArray(row.id))
+                        id = row.id[0];
+                    else
+                        id = row.id;
+                    delete row.id;
+                    let result = await mysql.updateRow(table, row, id);
+                    callback(200, result);
+                    return;
+                }
+                if (row.id)
+                    delete row.id;
+
+                let result = await mysql.insertRow(table, row);
+
                 callback(200, result);
 
             } catch (error) {
@@ -210,7 +277,7 @@ module.exports = function (io) {
         socket.on('deleteRows', async function (table, Ids, callback) {
             try {
                 let operator = await mysql.getOneRow('operator', {id: socket.decoded_token.id});
-                if (operator['permission_' + table] !== undefined && operator['permission_' + table].indexOf('delete') < 0) {
+                if (operator['operator_permission'].indexOf('can' + action + table) < 0) {
                     callback(412);
                     return;
                 }
@@ -226,7 +293,7 @@ module.exports = function (io) {
         socket.on('deleteRowsCustom', async function (table, filter, callback) {
             try {
                 let operator = await mysql.getOneRow('operator', {id: socket.decoded_token.id});
-                if (operator['permission_' + table] !== undefined && operator['permission_' + table].indexOf('delete') < 0) {
+                if (operator['operator_permission'].indexOf('can' + action + table) < 0) {
                     callback(412);
                     return;
                 }
@@ -419,7 +486,32 @@ module.exports = function (io) {
                 }
                 
                 let mediaId = await mysql.insertRow(table, row);
+                callback(200,mediaId);
+            } catch (error) {
+                callback(666, error);
+            }
+        });
+
+         socket.on('TripMedia', async function (buffers,table,type,row, callback) {
+            try {
+
+                let ArrayOfIds = [];
+                if (buffers[0].slider1 != '') 
+                    ArrayOfIds.push (await mysql.media.doUpload(buffers[0].slider1,type,table));
+                if (buffers[1].slider1 != '') 
+                    ArrayOfIds.push (await mysql.media.doUpload(buffers[1].slider2,type,table));
+                if (buffers[2].slider1 != '') 
+                    ArrayOfIds.push (await mysql.media.doUpload(buffers[2].slider3,type,table));
+                if (buffers[3].slider1 != '') 
+                    ArrayOfIds.push (await mysql.media.doUpload(buffers[3].slider4,type,table));
+              
+                for (let Id of ArrayOfIds){
+                    row.Trip_Attachment_FilePath =Id;
+                    await mysql.insertRow(table, row);
+                }
                 callback(200);
+                // let mediaId = await mysql.insertRow(table, row);
+                // callback(200);
             } catch (error) {
                 callback(666, error);
             }

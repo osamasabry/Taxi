@@ -49,7 +49,7 @@ module.exports = {
     },
     
     getOneRow: async function (Supplier_Trip_Trip_ID) {
-        let [result, ignored] = await sql.query("select t.* , tst.id,tst.Supplier_Trip_AddToSupplierDate,tst.Supplier_Trip_Trip_ID ,(tst.Supplier_Trip_AdultCost + tst.Supplier_Trip_AdultAddedFee) as priceAdult , (tst.Supplier_Trip_ChildCost + tst.Supplier_Trip_ChildAddedFee) as priceChild from Trips t  , Trips_Supplier_Trips tst  WHERE  tst.id = "+Supplier_Trip_Trip_ID+"  and tst.Supplier_Trip_Trip_ID = t.id");
+        let [result, ignored] = await sql.query("select * from taxi.GetTripFullDataWithImages_View where id =" + Supplier_Trip_Trip_ID);
         return result;
     },
 };
