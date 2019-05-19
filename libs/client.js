@@ -661,13 +661,11 @@ module.exports = function (io) {
         socket.on('SaveReservation', async function (buffers,json,callback) {
             try {
                 let result = await mysql.trip.save(json);
-                
                 if (buffers.length > 0 ){ 
                     for (let buffer of buffers)
-                        await mysql.trip.doUpload(buffer,result);
+                        await mysql.trip.doUpload(buffer,result.reservation_id);
                 }
-
-                callback(200, result);
+                callback(200, 'success');
             }
             catch (e) {
                 callback(666, e.message);
@@ -678,6 +676,40 @@ module.exports = function (io) {
             try {
                 let result = await mysql.trip.getAvailableTrip(date,count);
                 callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
+        socket.on('MyReservationTrips', async function (rider_id,callback) {
+            try {
+                let result = await mysql.trip.ReservationTrips(rider_id);
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
+        socket.on('getComplainDepartment', async function (callback) {
+            try {
+                let result = await mysql.getRows('LUT_Complain_Status','');
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
+        socket.on('SaveComplain', async function (buffers,json,callback) {
+            try {
+                let result = await mysql.trip.saveComplain(json);
+                if (buffers.length > 0 ){ 
+                    for (let buffer of buffers)
+                        await mysql.trip.doUploadComplain(buffer,result.argument_id);
+                }
+                callback(200, 'success');
             }
             catch (e) {
                 callback(666, e.message);

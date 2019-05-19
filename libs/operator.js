@@ -394,10 +394,10 @@ module.exports = function (io) {
 
 
                 if (table != 'Trips') {
-                    if (buffers[2].coverPage != null && buffers[0].icon != '') {
+                    if (buffers[2].coverPage != null && buffers[0].coverPage != '') {
                         cover_page  = await mysql.media.doUpload(buffers[2].coverPage,type,table);
                     }
-                    if (buffers[3].featuredWeb != null && buffers[0].icon != '') {
+                    if (buffers[3].featuredWeb != null && buffers[0].featuredWeb != '') {
                         featured_web  = await mysql.media.doUpload(buffers[3].featuredWeb,type,table);
                     }
                 }
@@ -492,19 +492,31 @@ module.exports = function (io) {
             }
         });
 
-         socket.on('TripMedia', async function (buffers,table,type,row, callback) {
+        socket.on('TripMedia', async function (buffers,table,type,row, callback) {
             try {
-
+           
                 let ArrayOfIds = [];
-                if (buffers[0].slider1 != '') 
+                if (buffers[0].slider1.length > 0) 
                     ArrayOfIds.push (await mysql.media.doUpload(buffers[0].slider1,type,table));
-                if (buffers[1].slider1 != '') 
+                if (buffers[1].slider2.length > 0) 
                     ArrayOfIds.push (await mysql.media.doUpload(buffers[1].slider2,type,table));
-                if (buffers[2].slider1 != '') 
+                if (buffers[2].slider3.length > 0) 
                     ArrayOfIds.push (await mysql.media.doUpload(buffers[2].slider3,type,table));
-                if (buffers[3].slider1 != '') 
+                if (buffers[3].slider4.length > 0) 
                     ArrayOfIds.push (await mysql.media.doUpload(buffers[3].slider4,type,table));
-              
+                if (buffers[4].slider5.length > 0) 
+                    ArrayOfIds.push (await mysql.media.doUpload(buffers[4].slider5,type,table)); 
+                 if (buffers[5].slider6.length > 0) 
+                    ArrayOfIds.push (await mysql.media.doUpload(buffers[5].slider6,type,table));
+                 if (buffers[6].slider7.length > 0) 
+                    ArrayOfIds.push (await mysql.media.doUpload(buffers[6].slider7,type,table));
+                 if (buffers[7].slider8.length > 0) 
+                    ArrayOfIds.push (await mysql.media.doUpload(buffers[7].slider8,type,table));
+                 if (buffers[8].slider9.length > 0) 
+                    ArrayOfIds.push (await mysql.media.doUpload(buffers[8].slider9,type,table));
+                 if (buffers[9].slider10.length > 0) 
+                    ArrayOfIds.push (await mysql.media.doUpload(buffers[9].slider10,type,table));
+                 
                 for (let Id of ArrayOfIds){
                     row.Trip_Attachment_FilePath =Id;
                     await mysql.insertRow(table, row);
