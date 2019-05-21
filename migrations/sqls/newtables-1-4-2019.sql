@@ -365,4 +365,3 @@ ENGINE = InnoDB;
 
 ALTER TABLE `Trips` ADD `Trip_Video` VARCHAR(500) NULL AFTER `Trip_Docs_Details`;
 
-ALTER TABLE `Complain` ADD `Complain_Trip_ID` INT NOT NULL AFTER `Complain_Travel_ID`, ADD INDEX (`Complain_Trip_ID`);

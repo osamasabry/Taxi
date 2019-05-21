@@ -111,7 +111,17 @@ global.foreignKeys = {
         {
             'Withdraw_Withdraw_Request_ID':'Trips_Supplier_Withdraw_Requests',
             'Withdraw_Supplier_ID':'Trips_Suppliers'
-        },    
+        },
+    'Complain':
+        {
+            'Complain_Reservation_ID':'Trips_Reservations',
+            'Complain_Travel_ID':'travel',
+            'Complain_CloseType_ID':'LUT_Complain_CloseType',
+            'Complain_ComplainDepartment_ID':'LUT_Complain_Department',
+            'Complain_Status_ID':'LUT_Complain_Status',
+            'Complain_Rider_ID':'rider',
+            'Complain_Driver_ID':'driver'
+        },   
         
 };
 module.exports = function (io) {
@@ -409,10 +419,10 @@ module.exports = function (io) {
                     if (buffers[1].featrured != '') {
                         row.Category_Featrured_Image_Name = featrured; 
                     }
-                    if (buffers[2].icon != '') {
+                    if (buffers[2].coverPage != '') {
                         row.Category_CoverPage_Name = cover_page; 
                     }
-                    if (buffers[3].featrured != '') {
+                    if (buffers[3].featuredWeb != '') {
                         row.Category_Featured_Image_Web = featured_web; 
                     }
 
@@ -430,10 +440,10 @@ module.exports = function (io) {
                     if (buffers[1].featrured != '') {
                         row.City_Featrured_Image_Name = featrured; 
                     }
-                    if (buffers[2].icon != '') {
+                    if (buffers[2].coverPage != '') {
                         row.City_CoverPage_Name = cover_page; 
                     }
-                    if (buffers[3].featrured != '') {
+                    if (buffers[3].featuredWeb != '') {
                         row.City_Featured_Image_Web = featured_web; 
                     }
                 }
