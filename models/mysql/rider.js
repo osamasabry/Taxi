@@ -70,5 +70,10 @@ module.exports = {
     getContactInformation: async function (riderId) {
         let [result,ignored] = await sql.query("SELECT travel.id as id, driver.last_name as driverName,driver.mobile_number AS driverNumber,rider.last_name as riderName,rider.mobile_number as riderNumber FROM travel INNER JOIN rider ON rider.id = travel.rider_id INNER JOIN driver ON driver.id = travel.driver_id WHERE rider_id = ? ORDER BY travel.id DESC LIMIT 1", [riderId]);
         return result[0];
-    }
+    },
+
+    getStatus: async function (riderId) {
+        let [result, ignored] = await sql.query("SELECT status FROM rider WHERE id = ?", [riderId]);
+        return result[0].status;
+    },
 };

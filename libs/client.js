@@ -572,7 +572,7 @@ module.exports = function (io) {
         socket.on('getCategories', async function (callback) {
             try {
                 let result = await mysql.getRows('Trips_Categories','');
-                console.log(result);
+                // console.log(result);
                 // result = await result.map(x => x.coupon);
                 callback(200, result);
             }
@@ -616,8 +616,10 @@ module.exports = function (io) {
 
         socket.on('getFeaturedTrips', async function (City_Id,callback) {
             try {
-
+                console.log('popp');
                 let result = await mysql.trip.getFeaturedTrips(City_Id);
+                console.log('**********************************');
+                // console.log(result);
                 callback(200, result);
             }
             catch (e) {
@@ -661,9 +663,12 @@ module.exports = function (io) {
         socket.on('SaveReservation', async function (buffers,json,callback) {
             try {
                 let result = await mysql.trip.save(json);
-                if (buffers.length > 0 ){ 
+                console.log('ssssssssssssssssssssssssssssssssssssssssss')
+                console.log(buffers);
+                if (buffers != ''){
+                    console.log('nooooooooooooooooooo') 
                     for (let buffer of buffers)
-                        await mysql.trip.doUpload(buffer,result.reservation_id);
+                        await mysql.trip.doUpload(buffer,result[0].reservation_id);
                 }
                 callback(200, 'success');
             }
@@ -694,7 +699,7 @@ module.exports = function (io) {
 
         socket.on('getComplainDepartment', async function (callback) {
             try {
-                let result = await mysql.getRows('LUT_Complain_Status','');
+                let result = await mysql.getRows('LUT_Complain_Department','');
                 callback(200, result);
             }
             catch (e) {
@@ -705,7 +710,7 @@ module.exports = function (io) {
         socket.on('SaveComplain', async function (buffers,json,callback) {
             try {
                 let result = await mysql.trip.saveComplain(json);
-                if (buffers.length > 0 ){ 
+                if (buffers != '' ){ 
                     for (let buffer of buffers)
                         await mysql.trip.doUploadComplain(buffer,result.argument_id);
                 }

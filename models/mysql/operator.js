@@ -32,7 +32,7 @@ module.exports = {
     updateOperatorPassword: function (operatorId, oldPass, newPass) {
         return sql.query("UPDATE operator SET password = ? WHERE password = ? AND id = ?", [newPass, oldPass, operatorId]);
     },
-    getStatus: async function (operatorId) {
+    getStatusOperator: async function (operatorId) {
         let [result, ignored] = await sql.query("SELECT status FROM operator WHERE id = ?", [operatorId]);
         return result[0].status;
     },
