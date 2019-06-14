@@ -365,3 +365,125 @@ ENGINE = InnoDB;
 
 ALTER TABLE `Trips` ADD `Trip_Video` VARCHAR(500) NULL AFTER `Trip_Docs_Details`;
 
+ALTER TABLE `Trips_Supplier_Trips` 
+	ADD `Supplier_Trip_InfantCost` INT NULL AFTER `Supplier_Trip_ChildAddedFee`, 
+	ADD `Supplier_Trip_InfantAddedFee` INT NULL AFTER `Supplier_Trip_InfantCost`;
+
+ALTER TABLE `Trips_Reservations` 
+ADD `Reservation_InfantCost` INT NULL AFTER `Reservation_ChildAddedFee`, 
+ADD `Reservation_InfantAddedFee` INT NULL AFTER `Reservation_InfantCost`, 
+ADD `Reservation_InfantCount` INT NULL AFTER `Reservation_InfantAddedFee`;
+
+
+
+CREATE TABLE `taxi`.`Trips_Categories_Lang` ( 
+	`id` INT NOT NULL AUTO_INCREMENT , 
+	`CategoryLang_Name` VARCHAR(255) NOT NULL , 
+	`CategoryLang_Description` TEXT NULL , 
+	`CityLang_Language_ID` INT NOT NULL , 
+	`CategoryLang_Category_ID` INT NOT NULL , 
+	PRIMARY KEY (`id`), 
+	INDEX (`CityLang_Language_ID`), 
+	INDEX (`CategoryLang_Category_ID`)) 
+ENGINE = InnoDB;
+
+
+CREATE TABLE `taxi`.`Trips_Tags_Lang` ( 
+	`id` INT NOT NULL AUTO_INCREMENT , 
+	`TagLang_Name` VARCHAR(255) NOT NULL , 
+	`TagLang_Language_ID` INT NOT NULL , 
+	`TagLang_Tag_ID` INT NOT NULL , 
+	PRIMARY KEY (`id`), 
+	INDEX (`TagLang_Language_ID`), 
+	INDEX (`TagLang_Tag_ID`)) 
+ENGINE = InnoDB;
+
+
+CREATE TABLE `taxi`.`Cities_Lang` ( 
+	`id` INT NOT NULL AUTO_INCREMENT , 
+	`CityLang_Name` VARCHAR(255) NOT NULL , 
+	`CityLang_Slogan` VARCHAR(255) NOT NULL , 
+	`CityLang_Description` TEXT NULL , 
+	`CityLang_Permalink` VARCHAR(255) NULL , 
+	`CityLang_Language_ID` INT NOT NULL , 
+	`CityLang_City_ID` INT NOT NULL , 
+	PRIMARY KEY (`id`), 
+	INDEX (`CityLang_City_ID`), 
+	INDEX (`CityLang_Language_ID`)) 
+ENGINE = InnoDB;
+
+
+CREATE TABLE `taxi`.`Trips_Lang` ( 
+	`id` INT NOT NULL AUTO_INCREMENT , 
+	`TripLang_Name` VARCHAR(255) NOT NULL , 
+	`TripLang_Description` TEXT NULL , 
+	`TripLang_Prerequisite_Details` TEXT NULL , 
+	`TripLang_Duration` VARCHAR(255) NULL , 
+	`TripLang_Docs_Details` TEXT NULL , 
+	`TripLang_Language_ID` INT NOT NULL , 
+	`TripLang_Trip_ID` INT NOT NULL , 
+	PRIMARY KEY (`id`), 
+	INDEX (`TripLang_Language_ID`), 
+	INDEX (`TripLang_Trip_ID`)) 
+ENGINE = InnoDB
+
+CREATE TABLE `taxi`.`LUT_Payment_Methods_Lang` ( 
+	`id` INT NOT NULL AUTO_INCREMENT , 
+	`PaymentMethodLang_Name` VARCHAR(255) NOT NULL , 
+	`PaymentMethodLang_Describtion` TEXT NULL , 
+	`PaymentMethodLang_Language_ID` INT NOT NULL , 
+	`PaymentMethodLang_PaymentMethod_ID` INT NOT NULL , 
+	PRIMARY KEY (`id`), 
+	INDEX (`PaymentMethodLang_PaymentMethod_ID`), 
+	INDEX (`PaymentMethodLang_Language_ID`)) 
+ENGINE = InnoDB;
+
+
+CREATE TABLE `taxi`.`LUT_Reservation_Status_Lang` ( 
+	`id` INT NOT NULL AUTO_INCREMENT , 
+	`StatusLang_Name` VARCHAR(255) NOT NULL , 
+	`StatusLang_Describtion` TEXT NULL , 
+	`StatusLang_Language_ID` INT NOT NULL , 
+	`StatusLang_Status_ID` INT NOT NULL , 
+	PRIMARY KEY (`id`), 
+	INDEX (`StatusLang_Language_ID`), 
+	INDEX (`StatusLang_Status_ID`)) 
+ENGINE = InnoDB;
+
+
+ALTER TABLE `Complain` CHANGE `Complain_Driver_ID` `Complain_Driver_ID` INT(11) NOT NULL DEFAULT '0';
+
+
+ALTER TABLE `Complain` CHANGE `Complain_Driver_ID` `Complain_Driver_ID` INT(11) NULL;
+
+
+ALTER TABLE `Cities`
+  DROP `City_Description`,
+  DROP `City_Permalink`,
+  DROP `City_Slogan`,
+  DROP `City`;
+
+  ALTER TABLE `LUT_Payment_Methods`
+  DROP `PaymentMethod_Describtion`;
+
+  ALTER TABLE `LUT_Reservation_Status`
+  DROP `Status_Describtion`;
+
+ ALTER TABLE `Trips_Categories`
+  DROP `Category_Description`,
+  DROP `Category_Permalink`;
+
+
+  ALTER TABLE `Trips_Categories_Lang` ADD `CategoryLang_Permalink` VARCHAR( 255) NULL AFTER `CategoryLang_Description`;
+
+  ALTER TABLE `Trips`
+  DROP `Trip_Description`,
+  DROP `Trip_OneLineDescription`,
+  DROP `Trip_Permalink`,
+  DROP `Trip_Prerequisite_Details`,
+  DROP `Trip_Duration`,
+  DROP `Trip_Docs_Details`;
+
+  ALTER TABLE `Trips_Lang` ADD `TripLang_OneLineDescription` VARCHAR(255) NULL AFTER `TripLang_Description`;
+
+  ALTER TABLE `Trips_Lang` ADD `TripLang_Permalink` VARCHAR(255) NULL AFTER `TripLang_OneLineDescription`;

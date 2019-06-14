@@ -72,10 +72,8 @@ module.exports = {
         return result[0];
     },
 
-     getStatus: async function (riderId) {
-        console.log(riderId)
+    getStatus: async function (riderId) {
         let [result, ignored] = await sql.query("SELECT status FROM rider WHERE id = ?", [riderId]);
-        // console.log(result);
         return result[0].status;
     },
 };
