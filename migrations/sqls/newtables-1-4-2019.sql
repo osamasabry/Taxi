@@ -453,3 +453,37 @@ ENGINE = InnoDB;
 
 ALTER TABLE `Complain` CHANGE `Complain_Driver_ID` `Complain_Driver_ID` INT(11) NOT NULL DEFAULT '0';
 
+
+ALTER TABLE `Complain` CHANGE `Complain_Driver_ID` `Complain_Driver_ID` INT(11) NULL;
+
+
+ALTER TABLE `Cities`
+  DROP `City_Description`,
+  DROP `City_Permalink`,
+  DROP `City_Slogan`,
+  DROP `City`;
+
+  ALTER TABLE `LUT_Payment_Methods`
+  DROP `PaymentMethod_Describtion`;
+
+  ALTER TABLE `LUT_Reservation_Status`
+  DROP `Status_Describtion`;
+
+ ALTER TABLE `Trips_Categories`
+  DROP `Category_Description`,
+  DROP `Category_Permalink`;
+
+
+  ALTER TABLE `Trips_Categories_Lang` ADD `CategoryLang_Permalink` VARCHAR( 255) NULL AFTER `CategoryLang_Description`;
+
+  ALTER TABLE `Trips`
+  DROP `Trip_Description`,
+  DROP `Trip_OneLineDescription`,
+  DROP `Trip_Permalink`,
+  DROP `Trip_Prerequisite_Details`,
+  DROP `Trip_Duration`,
+  DROP `Trip_Docs_Details`;
+
+  ALTER TABLE `Trips_Lang` ADD `TripLang_OneLineDescription` VARCHAR(255) NULL AFTER `TripLang_Description`;
+
+  ALTER TABLE `Trips_Lang` ADD `TripLang_Permalink` VARCHAR(255) NULL AFTER `TripLang_OneLineDescription`;
