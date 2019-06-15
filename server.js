@@ -51,7 +51,8 @@ const bodyParser = require('body-parser');
             const io = require("socket.io").listen(server);
             global.operatorsNamespace = require("./libs/operator")(io);
             require("./libs/client")(io);
-            require("./libs/trip-operator")(io);
+            require("./libs/interface")(io);
+            require("./libs/supplier-web")(io);
 
             process.on('unhandledRejection', r => console.log(r));
             server.listen(8080, function () {
