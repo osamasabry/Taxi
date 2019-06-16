@@ -560,7 +560,7 @@ module.exports = function (io) {
 
         socket.on('getCities', async function (Lang_ID,callback) {
             try {
-                console.log('oooo');
+                console.log(Lang_ID)
                 let result = await mysql.getRows('GetCitiy_View',{CityLang_Language_ID:Lang_ID});
                 callback(200, result);
             }
@@ -571,7 +571,7 @@ module.exports = function (io) {
 
         socket.on('getCategories', async function (Lang_ID,callback) {
             try {
-                let result = await mysql.getRows('Trips_Categories',{CategoryLang_Language_ID:Lang_ID});
+                let result = await mysql.getRows('GetCategories_View',{CategoryLang_Language_ID:Lang_ID});
                 // console.log(result);
                 // result = await result.map(x => x.coupon);
                 callback(200, result);
@@ -603,7 +603,7 @@ module.exports = function (io) {
             }
         });
         
-        socket.on('getTrip', async function (Lang_id,Supplier_Trip_Trip_ID,callback) {
+        socket.on('getTrip', async function (Lang_ID,Supplier_Trip_Trip_ID,callback) {
             try {
 
                 let result = await mysql.trip.getOneRow(Lang_ID,Supplier_Trip_Trip_ID);
@@ -616,10 +616,13 @@ module.exports = function (io) {
 
         socket.on('getFeaturedTrips', async function (Lang_ID,City_Id,callback) {
             try {
+                console.log(Lang_ID);
                 console.log('popp');
+                console.log(City_Id);
+                
                 let result = await mysql.trip.getFeaturedTrips(Lang_ID,City_Id);
                 console.log('**********************************');
-                // console.log(result);
+                console.log(result);
                 callback(200, result);
             }
             catch (e) {

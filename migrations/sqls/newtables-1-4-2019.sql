@@ -487,3 +487,8 @@ ALTER TABLE `Cities`
   ALTER TABLE `Trips_Lang` ADD `TripLang_OneLineDescription` VARCHAR(255) NULL AFTER `TripLang_Description`;
 
   ALTER TABLE `Trips_Lang` ADD `TripLang_Permalink` VARCHAR(255) NULL AFTER `TripLang_OneLineDescription`;
+
+  ALTER TABLE `Cities_Lang` ADD UNIQUE(`CityLang_Permalink`);
+  ALTER TABLE `Trips_Lang` ADD UNIQUE(`TripLang_Permalink`);
+  ALTER TABLE `Trips_Categories_Lang` ADD UNIQUE(`CategoryLang_Permalink`);
+
