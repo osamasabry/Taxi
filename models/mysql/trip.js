@@ -90,4 +90,10 @@ module.exports = {
         let [result, ignored] = await sql.query("select * from taxi.GetComplain_View where id =" + rider_id);
         return result;
     },
+
+    getReviews: async function (rider_id) {
+        let [result, ignored] = await sql.query("select * from taxi.GetMyReviews where Reservation_Rider_ID =" + rider_id);
+        return result;
+    },
+    
 };
