@@ -92,7 +92,12 @@ module.exports = {
     },
 
     getReviews: async function (rider_id) {
-        let [result, ignored] = await sql.query("select * from taxi.GetMyReviews where Reservation_Rider_ID =" + rider_id);
+        let [result, ignored] = await sql.query("select * from taxi.GetMyReviews_View where Reservation_Rider_ID =" + rider_id);
+        return result;
+    },
+
+    getPolicy: async function (Lang_ID,Policy_ID) {
+        let [result, ignored] = await sql.query("select * from taxi.GetPolicy_View where SysLang_Sys_Language_ID =" + Lang_ID+" And SysLang_Sys_Setting_ID ="+Policy_ID);
         return result;
     },
     

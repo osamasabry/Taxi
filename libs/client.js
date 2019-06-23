@@ -750,6 +750,16 @@ module.exports = function (io) {
                 callback(666, e.message);
             }
         });
+
+        socket.on('getPolicy', async function (Lang_ID,Policy_ID,callback) {
+            try {
+                let result = await mysql.trip.getPolicy(Lang_ID,Policy_ID);
+                callback(200, 'success');
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
     });
     return io;
 };
