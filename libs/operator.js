@@ -571,6 +571,17 @@ module.exports = function (io) {
             callback(result);
         });
 
-        
+        // ********************new routes*****************************
+
+        socket.on('updateStatusReservation', async function (status_code,reserv_id,callback) {
+            try {
+                let result = await mysql.trip.updateStatusReservation(status_code,reserv_id);
+                callback(200, result);
+            }
+            catch (err) {
+                console.log(err.message);
+            }
+
+        });
     });
 };

@@ -100,5 +100,10 @@ module.exports = {
         let [result, ignored] = await sql.query("select * from taxi.GetPolicy_View where SysLang_Sys_Language_ID =" + Lang_ID+" And SysLang_Sys_Setting_ID ="+Policy_ID);
         return result;
     },
+
+    updateStatusReservation: async function (status_code,reserv_id) {
+        let [result,ignored] = await sql.query("UPDATE Trips_Reservations SET Reservation_Status_ID = ? WHERE id = ?",[status_code,reserv_id]);
+        return result.affectedRows;
+    },
     
 };
