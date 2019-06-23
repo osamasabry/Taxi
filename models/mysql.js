@@ -84,7 +84,7 @@ module.exports = {
         }
     },
     getRowsCustom: async function (table, filers, sort, from, pageSize, fullTextFields, fullTextValue) {
-        
+        //console.log(filers);
         // console.log(table,filers,sort,from,pageSize,fullTextFields,fullTextValue);
         let query = '';
         let whereClauses = [];
@@ -94,13 +94,14 @@ module.exports = {
         for (const filter in filers) {
             
             if (filers.hasOwnProperty(filter) && filers[filter] && filers[filter] !== '') {
-                whereClauses.push(filter + " = ?");
+              //  console.log(filter);
+                whereClauses.push(filter + "= ?");
                 queryArguments.push(filers[filter]);
             }
         }
         if (whereClauses.length > 0)
             query += " WHERE " + whereClauses.join(" AND ");
-        // console.log("SELECT COUNT(id) AS count FROM " + table + query, queryArguments)
+       //  console.log("SELECT COUNT(id) AS count FROM " + table + query, queryArguments)
         let [count, ignored2] = await sql.query("SELECT COUNT(id) AS count FROM " + table + query, queryArguments);
         count = count[0].count;
         if (count === 0)

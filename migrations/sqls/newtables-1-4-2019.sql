@@ -492,3 +492,4 @@ ALTER TABLE `Cities`
   ALTER TABLE `Trips_Lang` ADD UNIQUE(`TripLang_Permalink`);
   ALTER TABLE `Trips_Categories_Lang` ADD UNIQUE(`CategoryLang_Permalink`);
 
+ALTER TABLE `Trips` ADD `Trip_CoverPage_Name` VARCHAR(500) NULL AFTER `Trip_OnTripIsFeatured_Image_Name`;

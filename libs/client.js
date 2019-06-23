@@ -560,7 +560,8 @@ module.exports = function (io) {
 
         socket.on('getCities', async function (Lang_ID,callback) {
             try {
-                console.log(Lang_ID)
+                console.log('oooooooooooooooo')
+                console.log(Lang_ID);
                 let result = await mysql.getRows('GetCitiy_View',{CityLang_Language_ID:Lang_ID});
                 callback(200, result);
             }
@@ -616,13 +617,8 @@ module.exports = function (io) {
 
         socket.on('getFeaturedTrips', async function (Lang_ID,City_Id,callback) {
             try {
-                console.log(Lang_ID);
-                console.log('popp');
-                console.log(City_Id);
                 
                 let result = await mysql.trip.getFeaturedTrips(Lang_ID,City_Id);
-                console.log('**********************************');
-                console.log(result);
                 callback(200, result);
             }
             catch (e) {
@@ -714,6 +710,16 @@ module.exports = function (io) {
                     for (let buffer of buffers)
                         await mysql.trip.doUploadComplain(buffer,result.argument_id);
                 }
+                callback(200, 'success');
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
+        socket.on('getMyComplain', async function (callback) {
+            try {
+                let result = await mysql.trip.getComplain(socket.decoded_token.id);
                 callback(200, 'success');
             }
             catch (e) {
