@@ -498,3 +498,5 @@ ALTER TABLE `Trips_Reservations`
 	ADD `Reservation_CollectorLocation` VARCHAR(500) NULL AFTER `Reservation_Room_Number`, 
 	ADD `Reservation_Collector_Hotel_Name` VARCHAR(500) NULL AFTER `Reservation_CollectorLocation`, 
 	ADD `Reservation_Collector_Room_Number` VARCHAR(255) NULL AFTER `Reservation_Collector_Hotel_Name`;
+
+ALTER TABLE `Trips_Suppliers` ADD `Supplier_ Trip_City_ID` VARCHAR(500) NULL AFTER `Supplier_City_ID`;

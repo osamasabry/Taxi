@@ -719,8 +719,10 @@ module.exports = function (io) {
 
         socket.on('getMyComplain', async function (callback) {
             try {
+                console.log('**************************************')
+                console.log(socket.decoded_token.id);
                 let result = await mysql.trip.getComplain(socket.decoded_token.id);
-                callback(200, 'success');
+                callback(200, result);
             }
             catch (e) {
                 callback(666, e.message);
@@ -743,8 +745,8 @@ module.exports = function (io) {
 
         socket.on('getMyReviews', async function (callback) {
             try {
-                let result = await mysql.trip.getReviews(socket.decoded_token.id);
-                callback(200, 'success');
+                let result = await mysql.trip.getReviewsRider(socket.decoded_token.id);
+                callback(200, result);
             }
             catch (e) {
                 callback(666, e.message);
@@ -754,12 +756,55 @@ module.exports = function (io) {
         socket.on('getPolicy', async function (Lang_ID,Policy_ID,callback) {
             try {
                 let result = await mysql.trip.getPolicy(Lang_ID,Policy_ID);
-                callback(200, 'success');
+                callback(200, result);
             }
             catch (e) {
                 callback(666, e.message);
             }
         });
+
+        /******************Supplier**********************/
+
+        socket.on('getSupplierReviews', async function (callback) {
+            try {
+                let result = await mysql.supplier.getReviewsSupplier(socket.decoded_token.id);
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
+        socket.on('getSupplierComplain', async function (callback) {
+            try {
+                let result = await mysql.supplier.getComplainSupplier(socket.decoded_token.id);
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
+        socket.on('stopReservation', async function (date,trip_supplier_id,callback) {
+            try {
+                let result = await mysql.supplier.stopReservation(date,trip_supplier_id);
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
+        socket.on('restartReservation', async function (date,trip_supplier_id,callback) {
+            try {
+                let result = await mysql.supplier.restartReservation(date,trip_supplier_id);
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
     });
     return io;
 };
