@@ -144,13 +144,13 @@ module.exports = function (io) {
                 callback(100);
                 return;
             }
-            let operator = await mysql.getOneRow('operator', {id: socket.decoded_token.id});
-            // if (operator['permission_' + table] !== undefined && operator['permission_' + table].indexOf('view') < 0) {
+            // let operator = await mysql.getOneRow('operator', {id: socket.decoded_token.id});
+            // // if (operator['permission_' + table] !== undefined && operator['permission_' + table].indexOf('view') < 0) {
             
-            if (operator['operator_permission'].indexOf('can' + action + table) < 0) {
-                callback(410);
-                return;
-            }
+            // if (operator['operator_permission'].indexOf('can' + action + table) < 0) {
+            //     callback(410);
+            //     return;
+            // }
             try {
                 // console.log('*******************');
                 let result = await mysql.getRowsCustom(table, filers, sort, from, pageSize, fullTextFields, fullTextValue);
