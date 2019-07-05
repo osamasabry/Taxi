@@ -36,4 +36,8 @@ module.exports = {
         let [result, ignored] = await sql.query("DELETE FROM `Trips_Supplier_Calendar` WHERE Supplier_Trip_Calendar_Date = '"+date+"' And Supplier_Trip_Calendar_Supplier_Trip_ID = "+ trip_supplier_id);
         return result.affectedRows === 1
     },
+
+    updateSupplierPassword: function (operatorId, oldPass, newPass) {
+        return sql.query("UPDATE Trips_Supplier_Users SET Trips_Supplier_User_Password = ? WHERE Trips_Supplier_User_Password = ? AND id = ?", [newPass, oldPass, operatorId]);
+    },
 };

@@ -15,7 +15,7 @@ module.exports = {
     doUpload: async function (buffer, reserve_id) {
         const fileName = shortId.generate() + '.webp';
         const relativePath = 'book/' + fileName;
-        const fullPath = "/home/going-images/htdocs/images" + relativePath;
+        const fullPath = "/home/going-images/htdocs/images/" + relativePath;
         // console.log(fullPath);
    
         if(!fs.isDir(fullPath)){
@@ -67,7 +67,7 @@ module.exports = {
     doUploadComplain: async function (buffer, argument_id) {
         const fileName = shortId.generate() + '.webp';
         const relativePath = 'complain/' + fileName;
-        const fullPath = "/home/going-images/htdocs/images" + relativePath;
+        const fullPath = "/home/going-images/htdocs/images/" + relativePath;
         // console.log(fullPath);
    
         if(!fs.isDir(fullPath)){

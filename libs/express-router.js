@@ -98,6 +98,8 @@ router.post("/supplier_login", async function (req, res) {
     try {
         var supplier = (await mysql.supplier.authenticate(req.query.email, req.query.password));
         let token = jwt.sign({id: supplier.id}, jwtToken, {});
+        delete supplier.Trips_Supplier_User_Password ;
+        
         // mysql.operator.setStatus(operator.id,'enabled');
         res.json({status: 200, token: token, user: supplier});
     }

@@ -80,6 +80,18 @@ module.exports = function (io) {
                     callback(666,error);
             }
         });
+
+        socket.on('updateSupplierPassword', async function (oldPass, newPass, callback) {
+            if (process.env.TEST_MODE && process.env.TEST_MODE === "true")
+                return;
+            let result = (await mysql.supplier.updateSupplierPassword(socket.decoded_token.id, oldPass, newPass))[0];
+            if (result.affectedRows === 1) {
+                callback(200);
+            }
+            else {
+                callback(403);
+            }
+        });
         
     });
 };
