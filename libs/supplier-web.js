@@ -64,10 +64,10 @@ module.exports = function (io) {
             let supplier = await mysql.getOneRow('Trips_Supplier_Users', {id: socket.decoded_token.id});
             // if (operator['permission_' + table] !== undefined && operator['permission_' + table].indexOf('view') < 0) {
             
-            if (supplier['Trips_Supplier_User_Permissions'].indexOf('can' + action + table) < 0) {
-                callback(410);
-                return;
-            }
+            // if (supplier['Trips_Supplier_User_Permissions'].indexOf('can' + action + table) < 0) {
+            //     callback(410);
+            //     return;
+            // }
             try {
                 let result = await mysql.getRowsCustom(table, filers, sort, from, pageSize, fullTextFields, fullTextValue);
                 /*if (foreignKeys[table])

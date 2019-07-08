@@ -12,8 +12,8 @@ module.exports = {
         }
     },
 
-    insertUserSupplier: async function (row,password,supplier_id) {
-        let [result, ignored] = await sql.query("INSERT INTO Trips_Supplier_Users (Trips_Supplier_User_Email,Trips_Supplier_User_Password,Trips_Supplier_User_FullName,Trips_Supplier_User_Permissions,Trips_Supplier_User_Supplier_ID,Trips_Supplier_User_IsOwner) VALUES (?,?,?,?,?,?)", [row.Supplier_Email,password,row.Supplier_Name,'',supplier_id,1]);
+    insertUserSupplier: async function (row,password,permisions,supplier_id) {
+        let [result, ignored] = await sql.query("INSERT INTO Trips_Supplier_Users (Trips_Supplier_User_Email,Trips_Supplier_User_Password,Trips_Supplier_User_FullName,Trips_Supplier_User_Permissions,Trips_Supplier_User_Supplier_ID,Trips_Supplier_User_IsOwner) VALUES (?,?,?,?,?,?)", [row.Supplier_Email,password,row.Supplier_Name,permisions,supplier_id,1]);
         return result.affectedRows === 1
     },
 
@@ -40,4 +40,15 @@ module.exports = {
     updateSupplierPassword: function (operatorId, oldPass, newPass) {
         return sql.query("UPDATE Trips_Supplier_Users SET Trips_Supplier_User_Password = ? WHERE Trips_Supplier_User_Password = ? AND id = ?", [newPass, oldPass, operatorId]);
     },
+
+    getReservationTripsSupplier: async function (city_id,date,supplier_id) {
+        let [result, ignored] = await sql.query("select * from taxi.SupplierTripsWithReservationMiniData_View where Trip_City_ID ='"+city_id+"' And Reservation_PickupDate ='"+date+"' And Supplier_Trip_Supplier_ID ="+ supplier_id);
+        return result;
+    },
+
+    getReservationTripDetails: async function (supplier_trip_id) {
+        let [result, ignored] = await sql.query("select * from taxi.GetReservationBySupplierTripID where Reservation_Supplier_Trip_ID = "+supplier_trip_id);
+        return result;
+    },
+    
 };
