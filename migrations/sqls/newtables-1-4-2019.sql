@@ -500,3 +500,5 @@ ALTER TABLE `Trips_Reservations`
 	ADD `Reservation_Collector_Room_Number` VARCHAR(255) NULL AFTER `Reservation_Collector_Hotel_Name`;
 
 ALTER TABLE `Trips_Suppliers` ADD `Supplier_ Trip_City_ID` VARCHAR(500) NULL AFTER `Supplier_City_ID`;
+
+ALTER TABLE `Trips_Supplier_Users` CHANGE `Trips_Supplier_User_EmoloyeeName` `Trips_Supplier_User_EmoloyeeName` VARCHAR(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT 'Admin';

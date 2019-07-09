@@ -64,10 +64,10 @@ module.exports = function (io) {
             let supplier = await mysql.getOneRow('Trips_Supplier_Users', {id: socket.decoded_token.id});
             // if (operator['permission_' + table] !== undefined && operator['permission_' + table].indexOf('view') < 0) {
             
-            if (supplier['Trips_Supplier_User_Permissions'].indexOf('can' + action + table) < 0) {
-                callback(410);
-                return;
-            }
+            // if (supplier['Trips_Supplier_User_Permissions'].indexOf('can' + action + table) < 0) {
+            //     callback(410);
+            //     return;
+            // }
             try {
                 let result = await mysql.getRowsCustom(table, filers, sort, from, pageSize, fullTextFields, fullTextValue);
                 /*if (foreignKeys[table])
@@ -78,6 +78,18 @@ module.exports = function (io) {
                     callback(666, error.message);
                 else
                     callback(666,error);
+            }
+        });
+
+        socket.on('updateSupplierPassword', async function (oldPass, newPass, callback) {
+            if (process.env.TEST_MODE && process.env.TEST_MODE === "true")
+                return;
+            let result = (await mysql.supplier.updateSupplierPassword(socket.decoded_token.id, oldPass, newPass))[0];
+            if (result.affectedRows === 1) {
+                callback(200);
+            }
+            else {
+                callback(403);
             }
         });
         

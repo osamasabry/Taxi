@@ -15,11 +15,11 @@ module.exports = {
     doUpload: async function (buffer, reserve_id) {
         const fileName = shortId.generate() + '.webp';
         const relativePath = 'book/' + fileName;
-        const fullPath = "/home/going-operator/htdocs/images/" + relativePath;
+        const fullPath = "/home/going-images/htdocs/images/" + relativePath;
         // console.log(fullPath);
    
         if(!fs.isDir(fullPath)){
-            await fs.mkdirp("/home/going-operator/htdocs/images/book");
+            await fs.mkdirp("/home/going-images/htdocs/images/book");
         }
         let fd = await fs.openAsync(fullPath, 'a', 0o755);
         await fs.writeAsync(fd, buffer, 'binary');
@@ -67,11 +67,11 @@ module.exports = {
     doUploadComplain: async function (buffer, argument_id) {
         const fileName = shortId.generate() + '.webp';
         const relativePath = 'complain/' + fileName;
-        const fullPath = "/home/going-operator/htdocs/images/" + relativePath;
+        const fullPath = "/home/going-images/htdocs/images/" + relativePath;
         // console.log(fullPath);
    
         if(!fs.isDir(fullPath)){
-            await fs.mkdirp("/home/going-operator/htdocs/images/complain");
+            await fs.mkdirp("/home/going-images/htdocs/images/complain");
         }
         let fd = await fs.openAsync(fullPath, 'a', 0o755);
         await fs.writeAsync(fd, buffer, 'binary');

@@ -805,6 +805,26 @@ module.exports = function (io) {
             }
         });
 
+        socket.on('getReservationTripsSupplier', async function (city_id,date,supplier_id,callback) {
+            try {
+                let result = await mysql.supplier.getReservationTripsSupplier(city,date,supplier_id);
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
+        socket.on('getReservationTripDetails', async function (supplier_trip_id,callback) {
+            try {
+                let result = await mysql.supplier.getReservationTripDetails(supplier_trip_id);
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
     });
     return io;
 };
