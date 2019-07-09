@@ -287,7 +287,7 @@ module.exports = function (io) {
                     callback(666,error);
             }
         });
-        socket.on('deleteRows', async function (table, Ids, callback) {
+        socket.on('deleteRows', async function (table, action, Ids, callback) {
             try {
                 let operator = await mysql.getOneRow('operator', {id: socket.decoded_token.id});
                 if (operator['operator_permission'].indexOf('can' + action + table) < 0) {
