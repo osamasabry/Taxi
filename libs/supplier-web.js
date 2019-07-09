@@ -20,10 +20,10 @@ module.exports = function (io) {
         socket.on('saveRowSupplier', async function (table,action ,row, callback) {
             try {
                 let supplier = await mysql.getOneRow('Trips_Supplier_Users', {id: socket.decoded_token.id});
-                if (supplier['Trips_Supplier_User_Permissions'].indexOf('can' + action + table) < 0) {
-                    callback(411);
-                    return;
-                }
+                // if (supplier['Trips_Supplier_User_Permissions'].indexOf('can' + action + table) < 0) {
+                //     callback(411);
+                //     return;
+                // }
                 //TODO:Dirty fix for null id rows. do it properly
                 if (row.media_id !== undefined && row.media_id === "")
                     delete row.media_id;
