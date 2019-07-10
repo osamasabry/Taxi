@@ -27,6 +27,10 @@ module.exports = {
         return result;
     },
 
+    getSupplierCities: async function (supplier_id) {
+        let [result, ignored] = await sql.query("select * from taxi.SuppliersCities_View where Supplier_Trip_Supplier_ID =" + supplier_id);
+        return result;
+    },
     stopReservation: async function (date,trip_supplier_id) {
         let [result, ignored] = await sql.query("select * from taxi.StopReservation('"+date+"','"+trip_supplier_id+"') as insert_id" );
         return result;
