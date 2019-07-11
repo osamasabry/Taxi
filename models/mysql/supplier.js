@@ -47,7 +47,19 @@ module.exports = {
     },
 
     getReservationTripsSupplier: async function (city_id,date,supplier_id) {
-        let [result, ignored] = await sql.query("select id,Trip_Name,Trip_City_ID,Trip_Is_Active,Trip_Docs_Is_Required,Supplier_Trip_AdultCost,Supplier_Trip_AdultAddedFee,AdultFee,Supplier_Trip_ChildCost,Supplier_Trip_ChildAddedFee,ChildFee,Supplier_Trip_InfantCost,Supplier_Trip_InfantAddedFee,InfantFee,Supplier_Trip_AvailableSeats,Supplier_Trip_Supplier_ID,Supplier_Trip_isActive,Reservation_PickupDate,InfantCount,AdultCount,ChildCount,Reservation_Supplier_Trip_ID, taxi.FUN_CheckIfTripIsAvilableForReservation(Reservation_Supplier_Trip_ID,"+date +") as IsAvilableForReservation from taxi.SupplierTripsWithReservationMiniData_View where Trip_City_ID ='"+city_id+"' And Supplier_Trip_Supplier_ID ="+supplier_id+" And ( Reservation_PickupDate ="+date+" OR Reservation_PickupDate is Null)");
+        var queryText = 'SELECT Trips_Supplier_Trips.id AS Trip_Supplier_Trip_ID,'
+                        +"Trips.Trip_Name AS Trip_Name,"
+                        +"Trips.Trip_Is_Active AS Trip_Is_Active,"
+                        +"Trips_Supplier_Trips.Supplier_Trip_isActive AS Supplier_Trip_isActive,"
+                        +"Trips_Supplier_Trips.Supplier_Trip_AdultAddedFee AS Supplier_Trip_AdultAddedFee,"
+                        +"Trips_Supplier_Trips.Supplier_Trip_AdultCost AS Supplier_Trip_AdultCost,"
+                        +"Trips_Supplier_Trips.Supplier_Trip_Supplier_ID AS Supplier_Trip_Supplier_ID,"
+                        +"Trips.Trip_City_ID AS Trip_City_ID,"
+                        +"taxi.FUN_GetSumACIForReservationByDate(Trips_Supplier_Trips.id, '"+date+"') As SumACI"
+                        +"taxi.FUN_CheckIfTripIsAvilableForReservation(Trips_Supplier_Trips.id,'"+ date +"') as IsAvilableForReservation"
+                        +"from taxi.SupplierTripsWithReservationMiniData_View where Trip_City_ID ='"+city_id+"' And Supplier_Trip_Supplier_ID ="+supplier_id;
+
+        let [result, ignored] = await sql.query(queryText);
         return result;
     },
 
