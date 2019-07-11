@@ -133,6 +133,16 @@ module.exports = function (io) {
                 callback(666, e.message);
             }
         });
+
+        socket.on('getReservationSupplierFinancials', async function (from,to,supplier_id,callback) {
+            try {
+                let result = await mysql.supplier.getReservationSupplierFinancials(from,to,supplier_id);
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
         
     });
 };
