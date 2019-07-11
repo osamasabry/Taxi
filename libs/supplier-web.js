@@ -103,6 +103,36 @@ module.exports = function (io) {
             }
 
         });
+
+        socket.on('stopReservation', async function (date,trip_supplier_id,callback) {
+            try {
+                let result = await mysql.supplier.stopReservation(date,trip_supplier_id);
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
+        socket.on('restartReservation', async function (date,trip_supplier_id,callback) {
+            try {
+                let result = await mysql.supplier.restartReservation(date,trip_supplier_id);
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
+        socket.on('getReservationTripsSupplier', async function (city_id,date,supplier_id,callback) {
+            try {
+                let result = await mysql.supplier.getReservationTripsSupplier(city,date,supplier_id);
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
         
     });
 };
