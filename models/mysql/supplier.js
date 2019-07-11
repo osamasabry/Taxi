@@ -47,7 +47,7 @@ module.exports = {
     },
 
     getReservationTripsSupplier: async function (city_id,date,supplier_id) {
-        let [result, ignored] = await sql.query("select * from taxi.SupplierTripsWithReservationMiniData_View where Trip_City_ID ='"+city_id+"' And Reservation_PickupDate ='"+date+"' And Supplier_Trip_Supplier_ID ="+ supplier_id);
+        let [result, ignored] = await sql.query("select * from taxi.SupplierTripsWithReservationMiniData_View where Trip_City_ID ='"+city_id+"' And Supplier_Trip_Supplier_ID ="+supplier_id+" And ( Reservation_PickupDate ="+date+" OR Reservation_PickupDate is Null)");
         return result;
     },
 

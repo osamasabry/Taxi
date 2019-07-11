@@ -126,7 +126,7 @@ module.exports = function (io) {
 
         socket.on('getReservationTripsSupplier', async function (city_id,date,supplier_id,callback) {
             try {
-                let result = await mysql.supplier.getReservationTripsSupplier(city,date,supplier_id);
+                let result = await mysql.supplier.getReservationTripsSupplier(city_id,date,supplier_id);
                 callback(200, result);
             }
             catch (e) {
