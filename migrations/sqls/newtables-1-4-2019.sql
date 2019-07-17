@@ -504,3 +504,7 @@ ALTER TABLE `Trips_Suppliers` ADD `Supplier_ Trip_City_ID` VARCHAR(500) NULL AFT
 ALTER TABLE `Trips_Supplier_Users` CHANGE `Trips_Supplier_User_EmoloyeeName` `Trips_Supplier_User_EmoloyeeName` VARCHAR(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT 'Admin';
 
 ALTER TABLE `rider` ADD `nationality_code` VARCHAR(100) NULL AFTER `last_name`;
+
+ALTER TABLE `Trips_Supplier_Trips` CHANGE `Supplier_Trip_InfantCost` `Supplier_Trip_InfantCost` DECIMAL(15,4 ) NULL DEFAULT NULL, CHANGE `Supplier_Trip_InfantAddedFee` `Supplier_Trip_InfantAddedFee` DECIMAL(15,4 ) NULL DEFAULT NULL;
+
+ALTER TABLE `Complain` CHANGE `Complain_Reservation_ID` `Complain_Reservation_ID` INT(11) NULL;

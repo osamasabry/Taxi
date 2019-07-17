@@ -34,8 +34,8 @@ router.post("/test", async function (req, res) {
         
         // console.log(req.query.text);
         // let result = await mysql.getRowsCustom('GetComplain_View',{},{property:'id',direction:'asc'},0,35,'','');
-        let result = await mysql.supplier.getReservationTripDetails(2);
-        // console.log(result);
+        let result = await mysql.trip.replayComplain('2019-07-17','osama test',3,1);
+        console.log(result);
         res.json({status: 200, result: result})
 
     }
@@ -117,7 +117,8 @@ router.post('/rider_signUp', async function (req, res) {
         res.json({status: 410});
         return;
     }
-    let profile = await mysql.rider.signUp(parseInt(req.body.mobile_number),req.body.user_name,parseInt(req.body.phone_code),req.body.nationality_code);
+    // console.log(req.body.mobile_number,req.body.user_name,req.body.phone_code,req.body.nationality_code)
+    let profile = await mysql.rider.signUp(parseInt(req.body.mobile_number),req.body.user_name,parseInt(req.body.phone_code),req.body.nationality_code,req.body.notification_id);
     // switch (profile.status) {
     //     case('blocked'):
     //         res.json({status: 412});

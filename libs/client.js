@@ -617,7 +617,6 @@ module.exports = function (io) {
 
         socket.on('getFeaturedTrips', async function (Lang_ID,City_Id,callback) {
             try {
-                
                 let result = await mysql.trip.getFeaturedTrips(Lang_ID,City_Id);
                 callback(200, result);
             }
@@ -763,6 +762,16 @@ module.exports = function (io) {
             }
         });
 
+        socket.on('getAvailableSeats', async function (Lang_ID,count,supplier_trip_id,callback) {
+            try {
+                let result = await mysql.trip.getAvailableSeats(Lang_ID,count,supplier_trip_id);
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
         /******************Supplier**********************/
 
         socket.on('getSupplierReviews', async function (callback) {
@@ -841,10 +850,38 @@ module.exports = function (io) {
                 callback(200, result);
             }
             catch (err) {
-                console.log(err.message);
+                callback(666, e.message);
             }
 
         });
+
+        socket.on('replayComplain', async function (buffer,date,text,issued_by,complain_id,callback) {
+            try {
+                let result = await mysql.trip.replayComplain(date,text,issued_by,complain_id);
+                
+                let upload = await mysql.trip.doUploadComplain(buffer,result.argument_id);
+
+                callback(200, result);
+            }
+            catch (err) {
+               callback(666, e.message);
+            }
+
+        });
+
+
+        socket.on('getReplayComplain', async function (complain_id,callback) {
+            try {
+                let result = await mysql.trip.getreplayComplain(complain_id);
+                callback(200, result);
+            }
+            catch (err) {
+               callback(666, e.message);
+            }
+
+        });
+
+
     });
     return io;
 };

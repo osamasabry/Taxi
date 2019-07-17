@@ -50,7 +50,7 @@ module.exports = {
     },
     
     getOneRow: async function (Lang_id,Supplier_Trip_Trip_ID) {
-        let [result, ignored] = await sql.query("select * from taxi.GetTripFullDataWithImages_View where id =" + Supplier_Trip_Trip_ID+ " AND TripLang_Language_ID = " + Lang_id);
+        let [result, ignored] = await sql.query("select * from taxi.GetTripFullDataWithImages_View where supplier_trip_id =" + Supplier_Trip_Trip_ID+ " AND TripLang_Language_ID = " + Lang_id);
         return result;
     },
 
@@ -106,5 +106,20 @@ module.exports = {
         return result.affectedRows;
     },
 
-    
+    replayComplain: async function (date,text,issued_by,complain_id) {
+        let result = await sql.query("INSERT INTO Complain_Arguments (ComplainArgument_Date,ComplainArgument_Details,ComplainArgument_IssuedBy_Type,ComplainArgument_Complain_ID) VALUES (?,?,?,?)", [date,text,issued_by,complain_id]);
+        let [id,ignored]  = await sql.query("SELECT LAST_INSERT_ID() as argument_id;");
+        // console.log (id);
+        return id[0];
+    },
+
+    getreplayComplain: async function (complain_id) {
+        let [result, ignored] = await sql.query("select * from taxi.GetReplayComplainWithAdditionalImages where id =" + complain_id);
+        return result;
+    },
+
+    getAvailableSeats: async function (Lang_ID,count,supplier_trip_id) {
+        let [result, ignored] = await sql.query("SELECT * FROM taxi.SupplierTripsFullDataByAvailableSeats_View WHERE RemainingSeats < "+count+"  And TripLang_Language_ID = " + Lang_ID+" And id = " + supplier_trip_id);
+         return result;
+    },
 };

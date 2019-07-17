@@ -586,5 +586,19 @@ module.exports = function (io) {
             }
 
         });
+
+        socket.on('SaveComplain', async function (buffers,json,callback) {
+            try {
+                let result = await mysql.trip.saveComplain(json);
+                if (buffers != '' ){ 
+                    for (let buffer of buffers)
+                        await mysql.trip.doUploadComplain(buffer,result.argument_id);
+                }
+                callback(200, 'success');
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
     });
 };

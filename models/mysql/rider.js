@@ -15,11 +15,11 @@ module.exports = {
         // }
         return result;
     },
-    signUp: async function (mobileNumber,user_name,phone_code,nationality_code) {
+    signUp: async function (mobileNumber,user_name,phone_code,nationality_code,notification_id) {
         let flag = false;
         let result = await mysql.getOneRow('rider',{mobile_number:mobileNumber});
         if(!result) {
-            await sql.query("INSERT INTO rider (mobile_number,first_name,phone_code,nationality_code) VALUES (?,?,?)", [mobileNumber,user_name,phone_code,nationality_code]);
+            await sql.query("INSERT INTO rider (mobile_number,first_name,phone_code,nationality_code,notification_player_id) VALUES (?,?,?,?,?)", [mobileNumber,user_name,phone_code,nationality_code,notification_id]);
             result = await mysql.getOneRow('rider',{mobile_number:mobileNumber});
             flag = true;
         }
