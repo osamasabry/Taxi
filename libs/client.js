@@ -718,8 +718,8 @@ module.exports = function (io) {
 
         socket.on('getMyComplain', async function (callback) {
             try {
-                console.log('**************************************')
-                console.log(socket.decoded_token.id);
+                // console.log('**************************************')
+                // console.log(socket.decoded_token.id);
                 let result = await mysql.trip.getComplain(socket.decoded_token.id);
                 callback(200, result);
             }
@@ -873,6 +873,17 @@ module.exports = function (io) {
         socket.on('getReplayComplain', async function (complain_id,callback) {
             try {
                 let result = await mysql.trip.getreplayComplain(complain_id);
+                callback(200, result);
+            }
+            catch (err) {
+               callback(666, e.message);
+            }
+
+        });
+
+        socket.on('updateStatusComplain', async function (complain_id,callback) {
+            try {
+                let result = await mysql.trip.updateStatusComplain(complain_id);
                 callback(200, result);
             }
             catch (err) {

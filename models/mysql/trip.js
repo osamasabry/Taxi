@@ -119,7 +119,12 @@ module.exports = {
     },
 
     getAvailableSeats: async function (Lang_ID,count,supplier_trip_id) {
-        let [result, ignored] = await sql.query("SELECT * FROM taxi.SupplierTripsFullDataByAvailableSeats_View WHERE RemainingSeats < "+count+"  And TripLang_Language_ID = " + Lang_ID+" And id = " + supplier_trip_id);
+        let [result, ignored] = await sql.query("SELECT TripBusyAndSupplierCalenderDate FROM taxi.SupplierTripsFullDataByAvailableSeats_View WHERE RemainingSeats < "+count+"  And TripLang_Language_ID = " + Lang_ID+" And id = " + supplier_trip_id);
          return result;
+    },
+
+    updateStatusReservation: async function (complain_id) {
+        let [result,ignored] = await sql.query("UPDATE Complain SET Complain_Status_ID = ? WHERE id = ?",[complain_id]);
+        return result.affectedRows;
     },
 };

@@ -230,11 +230,10 @@ module.exports = function (io) {
                     let password = row.Trips_Supplier_User_Password;
                     delete row.Trips_Supplier_User_Password;
 
-                    let q = await sql.query("SELECT taxi.FUN_GetSupplierDefaultAdminPermission as permision");
+                    let [q, ignored] = await sql.query("SELECT taxi.FUN_GetSupplierDefaultAdminPermission() as permision");
                     let permisions = (q[0].permision);
                     let id = await mysql.insertRow(table, row);
-                     result = await mysql.supplier.insertUserSupplier(row,password,permisions,id);
-                    console.log(result);
+                    result = await mysql.supplier.insertUserSupplier(row,password,permisions,id);
                 }else{
                      result = await mysql.insertRow(table, row);
                 }

@@ -34,7 +34,7 @@ router.post("/test", async function (req, res) {
         
         // console.log(req.query.text);
         // let result = await mysql.getRowsCustom('GetComplain_View',{},{property:'id',direction:'asc'},0,35,'','');
-        let result = await mysql.trip.replayComplain('2019-07-17','osama test',3,1);
+        let result = await mysql.trip.getOneRow(1,8);
         console.log(result);
         res.json({status: 200, result: result})
 

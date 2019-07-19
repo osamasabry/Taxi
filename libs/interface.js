@@ -475,6 +475,42 @@ module.exports = function (io) {
                 callback(403);
             }
         });
+
+         socket.on('SaveReservation', async function (buffers,json,callback) {
+            try {
+                let result = await mysql.trip.save(json);
+                if (buffers != ''){
+                    for (let buffer of buffers)
+                        await mysql.trip.doUpload(buffer,result[0].reservation_id);
+                }
+                callback(200, 'success');
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
+        socket.on('getMyComplain', async function (callback) {
+            try {
+                // console.log('**************************************')
+                // console.log(socket.decoded_token.id);
+                let result = await mysql.trip.getComplain(socket.decoded_token.id);
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
+        socket.on('MyReservationTrips', async function (Lang_ID,callback) {
+            try {
+                let result = await mysql.trip.ReservationTrips(Lang_ID,socket.decoded_token.id);
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
         
     });
 };
