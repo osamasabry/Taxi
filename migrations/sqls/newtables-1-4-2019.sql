@@ -508,3 +508,14 @@ ALTER TABLE `rider` ADD `nationality_code` VARCHAR(100) NULL AFTER `last_name`;
 ALTER TABLE `Trips_Supplier_Trips` CHANGE `Supplier_Trip_InfantCost` `Supplier_Trip_InfantCost` DECIMAL(15,4 ) NULL DEFAULT NULL, CHANGE `Supplier_Trip_InfantAddedFee` `Supplier_Trip_InfantAddedFee` DECIMAL(15,4 ) NULL DEFAULT NULL;
 
 ALTER TABLE `Complain` CHANGE `Complain_Reservation_ID` `Complain_Reservation_ID` INT(11) NULL;
+
+CREATE TABLE `taxi`.`Trip_Sub_Suppliers` (
+ `id` INT NOT NULL AUTO_INCREMENT , 
+ `Supplier_ID` INT NOT NULL , 
+ `User_ID` INT NOT NULL , 
+ `User_Device_ID` VARCHAR(255) NOT NULL , 
+ PRIMARY KEY (`id`)) 
+ENGINE = InnoDB;
+
+
+ALTER TABLE `Trip_Sub_Suppliers` ADD INDEX( `Supplier_ID`, `User_ID`);

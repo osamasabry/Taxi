@@ -61,7 +61,7 @@ module.exports = {
 
     saveComplain: async function (json) {
         let [result, ignored] = await sql.query("SELECT taxi.saveComplain('"+json+"') as argument_id");
-        return result ;
+        return result[0] ;
     },
 
     doUploadComplain: async function (buffer, argument_id) {

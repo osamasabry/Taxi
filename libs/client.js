@@ -704,7 +704,9 @@ module.exports = function (io) {
 
         socket.on('SaveComplain', async function (buffers,json,callback) {
             try {
+                
                 let result = await mysql.trip.saveComplain(json);
+            
                 if (buffers != '' ){ 
                     for (let buffer of buffers)
                         await mysql.trip.doUploadComplain(buffer,result.argument_id);
@@ -892,6 +894,18 @@ module.exports = function (io) {
 
         });
 
+        socket.on('updateSuppliersDevice', async function (row, callback) {
+            try {
+                    result = await mysql.insertRow('Trip_Sub_Suppliers', row);
+                    callback(200, result);
+
+            } catch (error) {
+                if(error.message !== undefined)
+                    callback(666, error.message);
+                else
+                    callback(666,error);
+            }
+        });
 
     });
     return io;

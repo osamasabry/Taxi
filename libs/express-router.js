@@ -34,7 +34,7 @@ router.post("/test", async function (req, res) {
         
         // console.log(req.query.text);
         // let result = await mysql.getRowsCustom('GetComplain_View',{},{property:'id',direction:'asc'},0,35,'','');
-        let result = await mysql.trip.getOneRow(1,8);
+        let result = await mysql.trip.getTripsByCategory(1,,1);
         console.log(result);
         res.json({status: 200, result: result})
 
@@ -112,27 +112,36 @@ router.post("/supplier_login", async function (req, res) {
     }
 });
 
+// sign up and login from web 
+router.post('/rider_register', async function (req, res) {
+    let profile = await mysql.rider.register(parseInt(req.body.mobile_number),req.body.user_name,parseInt(req.body.phone_code),req.body.email,req.body.password);
+    res.json({status: 200, flag: profile});
+});
+
+router.post('/rider_webLogin', async function (req, res) {
+    let profile = await mysql.rider.getWebProfile(req.body.email,req.body.password);
+    switch (profile.status) {
+        case('blocked'):
+            res.json({status: 412});
+            return;
+    }
+    let keys = {
+        id: profile.id,
+        prefix: riderPrefix
+    };
+    let token = jwt.sign(keys, jwtToken, {});
+    res.json({status: 200, token: token, user: profile});
+}); 
+
+
+// sign up and login from mobile from mobile
 router.post('/rider_signUp', async function (req, res) {
     if (process.env.RIDER_MIN_VERSION && req.body.version && parseInt(req.body.version) < process.env.RIDER_MIN_VERSION) {
         res.json({status: 410});
         return;
     }
-    // console.log(req.body.mobile_number,req.body.user_name,req.body.phone_code,req.body.nationality_code)
     let profile = await mysql.rider.signUp(parseInt(req.body.mobile_number),req.body.user_name,parseInt(req.body.phone_code),req.body.nationality_code,req.body.notification_id);
-    // switch (profile.status) {
-    //     case('blocked'):
-    //         res.json({status: 412});
-    //         return;
-    // }
-    // let keys = {
-    //     id: profile.id,
-    //     prefix: riderPrefix
-    // };
-    // let token = jwt.sign(keys, jwtToken, {});
-    // res.json({status: 200, token: token, user: profile});
-
     res.json({status: 200, flag: profile});
-
 });
 
 router.post('/rider_login', async function (req, res) {
@@ -153,6 +162,8 @@ router.post('/rider_login', async function (req, res) {
     let token = jwt.sign(keys, jwtToken, {});
     res.json({status: 200, token: token, user: profile});
 });
+
+
 router.post('/driver_login', async function (req, res) {
     if (process.env.DRIVER_MIN_VERSION && req.body.version && parseInt(req.body.version) < process.env.DRIVER_MIN_VERSION) {
         res.json({status: 410});

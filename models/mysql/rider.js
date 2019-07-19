@@ -25,6 +25,24 @@ module.exports = {
         }
         return flag;
     },
+    // from web 
+    register: async function (mobileNumber,user_name,phone_code,email,password) {
+        let flag = false;
+        let result = await mysql.getOneRow('rider',{mobile_number:mobileNumber});
+        if(!result) {
+            await sql.query("INSERT INTO rider (mobile_number,first_name,phone_code,email,password) VALUES (?,?,?,?,?)", [mobileNumber,user_name,phone_code,email,password]);
+            result = await mysql.getOneRow('rider',{mobile_number:mobileNumber});
+            flag = true;
+        }
+        return flag;
+    },
+    // from web 
+    getWebProfile: async function (email,password) {
+        let rider;
+            rider = (await mysql.getOneRow('rider',{email:email,password:password}));
+        return rider;
+    },
+
     setProfileImage: async function (riderId, fileName) {
         let [insertMediaResult,ignored] = await sql.query("INSERT INTO media (type,privacy_level,address) VALUES ('rider image','medium',?)",[fileName]);
         let [updateRiderResult,ignored2] = await sql.query("UPDATE rider SET media_id = ? WHERE id = ?",[insertMediaResult.insertId,riderId]);
