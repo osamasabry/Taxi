@@ -44,8 +44,8 @@ module.exports = {
          return result;
     },
  
-    getAvailableTrip: async function (Lang_ID,date,count) {
-        let [result, ignored] = await sql.query("SELECT * FROM taxi.SupplierTripsFullDataByAvailableSeats_View WHERE RemainingSeats >= "+count+" And (TripBusyAndSupplierCalenderDate="+date+" or TripBusyAndSupplierCalenderDate IS NULL) And TripLang_Language_ID = " + Lang_ID);
+    getAvailableTrip: async function (Lang_ID,date,count,text) {
+        let [result, ignored] = await sql.query("SELECT * FROM taxi.SupplierTripsFullDataByAvailableSeats_View WHERE RemainingSeats >= "+count+" And (TripBusyAndSupplierCalenderDate="+date+" or TripBusyAndSupplierCalenderDate IS NULL) And TripLang_Language_ID = " + Lang_ID+" And Trip_Name like '%"+text+"%'");
          return result;
     },
     
@@ -88,6 +88,7 @@ module.exports = {
 
     getComplain: async function (rider_id) {
         let [result, ignored] = await sql.query("select * from taxi.GetComplain_View where Complain_Rider_ID =" + rider_id);
+        console.log(result);
         return result;
     },
 
@@ -107,6 +108,7 @@ module.exports = {
     },
 
     replayComplain: async function (date,text,issued_by,complain_id) {
+        let res = await sql.query("INSERT INTO Complain (Complain_Status_ID) VALUES (?)", [3]);
         let result = await sql.query("INSERT INTO Complain_Arguments (ComplainArgument_Date,ComplainArgument_Details,ComplainArgument_IssuedBy_Type,ComplainArgument_Complain_ID) VALUES (?,?,?,?)", [date,text,issued_by,complain_id]);
         let [id,ignored]  = await sql.query("SELECT LAST_INSERT_ID() as argument_id;");
         // console.log (id);
@@ -123,8 +125,13 @@ module.exports = {
          return result;
     },
 
-    updateStatusReservation: async function (complain_id) {
-        let [result,ignored] = await sql.query("UPDATE Complain SET Complain_Status_ID = ? WHERE id = ?",[complain_id]);
+    updateStatusComplain: async function (complain_id) {
+        let [result,ignored] = await sql.query("UPDATE Complain SET Complain_Status_ID = 4 WHERE id = ?",[complain_id]);
+        return result.affectedRows;
+    },
+
+    updateNotificationSupplier: async function (notificationSupplierId,user_id) {
+        let [result,ignored] = await sql.query("UPDATE Trip_Sub_Suppliers SET notification_supplier_id = ? WHERE User_ID = ?",[notificationSupplierId,user_id]);
         return result.affectedRows;
     },
 };

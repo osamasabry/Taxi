@@ -511,6 +511,20 @@ module.exports = function (io) {
                 callback(666, e.message);
             }
         });
+
+        socket.on('saveReview', async function (star,text,reserv_id,callback) {
+            try {
+                 await mysql.insertRow('Trips_Review', {
+                    Trips_Review_Stars: star,
+                    Trips_Review_Details: text,
+                    Trips_Review_Reservation_ID: reserv_id
+                });
+                callback(200);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
         
     });
 };

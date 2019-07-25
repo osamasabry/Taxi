@@ -519,3 +519,5 @@ ENGINE = InnoDB;
 
 
 ALTER TABLE `Trip_Sub_Suppliers` ADD INDEX( `Supplier_ID`, `User_ID`);
+
+ALTER TABLE `Trip_Sub_Suppliers` CHANGE `User_Device_ID` `notification_supplier_id` VARCHAR(500) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;

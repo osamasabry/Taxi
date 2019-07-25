@@ -34,8 +34,8 @@ router.post("/test", async function (req, res) {
         
         // console.log(req.query.text);
         // let result = await mysql.getRowsCustom('GetComplain_View',{},{property:'id',direction:'asc'},0,35,'','');
-        let result = await mysql.trip.getTripsByCategory(1,,1);
-        console.log(result);
+        let result = await mysql.trip.getFeaturedTrips(1,1);
+        // console.log(result);
         res.json({status: 200, result: result})
 
     }
@@ -140,7 +140,7 @@ router.post('/rider_signUp', async function (req, res) {
         res.json({status: 410});
         return;
     }
-    let profile = await mysql.rider.signUp(parseInt(req.body.mobile_number),req.body.user_name,parseInt(req.body.phone_code),req.body.nationality_code,req.body.notification_id);
+    let profile = await mysql.rider.signUp(parseInt(req.body.mobile_number),req.body.user_name,parseInt(req.body.phone_code),req.body.nationality_code);
     res.json({status: 200, flag: profile});
 });
 
