@@ -48,17 +48,22 @@ const bodyParser = require('body-parser');
                 ca:     fs.readFileSync('/home/going-operator/certs/server.ca-bundle')
             };
             let server = require('https').createServer(options,app);
-            const io = require("socket.io").listen(server);
+            const io = require("socket.io")(server, {
+                pingInterval: 10000,
+                pingTimeout: 5000000,
+            });
             global.operatorsNamespace = require("./libs/operator")(io);
             require("./libs/client")(io);
             require("./libs/interface")(io);
             require("./libs/supplier-web")(io);
 
             process.on('unhandledRejection', r => console.log(r));
+            server.timeout = 1000000;
             server.listen(8080, function () {
                 console.log("Listening on " + 8080);
 
             });
+            //server.timeout = 1000000;
 
     // } else {
     //     throw new Error(result.message);

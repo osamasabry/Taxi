@@ -305,7 +305,7 @@ module.exports = function (io) {
         socket.on('deleteRowsCustom', async function (table, filter, callback) {
             try {
                 let operator = await mysql.getOneRow('operator', {id: socket.decoded_token.id});
-                if (operator['operator_permission'].indexOf('can' + action + table) < 0) {
+                if (operator['operator_permission'].indexOf('can' + 'Delete' + table) < 0) {
                     callback(412);
                     return;
                 }
