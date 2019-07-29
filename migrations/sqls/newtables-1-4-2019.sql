@@ -521,3 +521,25 @@ ENGINE = InnoDB;
 ALTER TABLE `Trip_Sub_Suppliers` ADD INDEX( `Supplier_ID`, `User_ID`);
 
 ALTER TABLE `Trip_Sub_Suppliers` CHANGE `User_Device_ID` `notification_supplier_id` VARCHAR(500) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+
+CREATE TABLE `taxi`.`LUT_Notification_Types` ( `id` INT NOT NULL AUTO_INCREMENT , `LUT_Notification_Types_Name` VARCHAR(255) NOT NULL , `LUT_Notification_Types_Desc` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+CREATE TABLE `taxi`.`Trip_Rider_Notifications` ( 
+	`id` INT NOT NULL AUTO_INCREMENT , 
+	`Trip_Rider_Notifications_Title` VARCHAR(255) NOT NULL , 
+	`Trip_Rider_Notifications_Body` TEXT NOT NULL , 
+	`Trip_Rider_Notifications_Action ID` INT NOT NULL , 
+	`Trip_Rider_Notifications_Date` DATE NOT NULL , 
+	`Trip_Rider_Notifications_Type_ID` INT NOT NULL , 
+	PRIMARY KEY (`id`)) 
+ENGINE = InnoDB;
+
+CREATE TABLE `taxi`.`Trip_Supplier_Notifications` ( 
+	`id` INT NOT NULL AUTO_INCREMENT , 
+	`Trip_Supplier_Notifications_Title` VARCHAR(255) NOT NULL , 
+	`Trip_Supplier_Notifications_Body` TEXT NOT NULL , 
+	`Trip_Supplier_Notifications_Action ID` INT NOT NULL , 
+	`Trip_Supplier_Notifications_Date` DATE NOT NULL , 
+	`Trip_Supplier_Notifications_Type_ID` INT NOT NULL , 
+	PRIMARY KEY (`id`)) 
+ENGINE = InnoDB;

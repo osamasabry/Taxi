@@ -108,7 +108,9 @@ module.exports = {
     },
 
     replayComplain: async function (date,text,issued_by,complain_id) {
-        let res = await sql.query("INSERT INTO Complain (Complain_Status_ID) VALUES (?)", [3]);
+  
+        let res = await sql.query("UPDATE Complain SET Complain_Status_ID = 3 WHERE id = ?",[complain_id]);
+        
         let result = await sql.query("INSERT INTO Complain_Arguments (ComplainArgument_Date,ComplainArgument_Details,ComplainArgument_IssuedBy_Type,ComplainArgument_Complain_ID) VALUES (?,?,?,?)", [date,text,issued_by,complain_id]);
         let [id,ignored]  = await sql.query("SELECT LAST_INSERT_ID() as argument_id;");
         // console.log (id);

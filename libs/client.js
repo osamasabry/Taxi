@@ -214,8 +214,6 @@ module.exports = function (io) {
             else
                 io.to(riders[riderId]).emit('driverAccepted', driver, 0, 0, travel.cost_best);
         
-            console.log(travel);
-
              callback(travel) ;
         });
 
@@ -667,7 +665,7 @@ module.exports = function (io) {
                     for (let buffer of buffers)
                         await mysql.trip.doUpload(buffer,result[0].reservation_id);
                 }
-                callback(200, 'success');
+                callback(200, result[0].reservation_id);
             }
             catch (e) {
                 callback(666, e.message);
@@ -861,7 +859,7 @@ module.exports = function (io) {
 
         socket.on('replayComplain', async function (buffer,date,text,issued_by,complain_id,callback) {
             try {
-                let result = await mysql.trip.replayComplain(date,text,issued_by,complain_id);
+                let result = await mysql.trip.replayComplain(date,text,1,complain_id);
                 
                 if (buffer != '') {
                     let upload = await mysql.trip.doUploadComplain(buffer,result.argument_id);
@@ -870,7 +868,7 @@ module.exports = function (io) {
                 callback(200, result);
             }
             catch (err) {
-               callback(666, e.message);
+               callback(666, err.message);
             }
 
         });
@@ -882,7 +880,7 @@ module.exports = function (io) {
                 callback(200, result);
             }
             catch (err) {
-               callback(666, e.message);
+               callback(666, err.message);
             }
 
         });

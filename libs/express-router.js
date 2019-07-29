@@ -140,7 +140,18 @@ router.post('/rider_signUp', async function (req, res) {
         res.json({status: 410});
         return;
     }
-    let profile = await mysql.rider.signUp(parseInt(req.body.mobile_number),req.body.user_name,parseInt(req.body.phone_code),req.body.nationality_code);
+
+    var phoneCodelength = req.body.phone_code.length;
+    var mobileNumber    = req.body.mobile_number.substring(phoneCodelength);
+    var checkNumber = mobileNumber.toString()[0];
+
+    if (checkNumber==0) 
+        mobileNumber = parseInt(req.body.phone_code) + mobileNumber.substring(1)
+    else
+        mobileNumber = parseInt(req.body.phone_code) + mobileNumber;
+
+    console.log(mobileNumber);
+    let profile = await mysql.rider.signUp(parseInt(mobileNumber),req.body.user_name,parseInt(req.body.phone_code),req.body.nationality_code);
     res.json({status: 200, flag: profile});
 });
 
@@ -149,6 +160,16 @@ router.post('/rider_login', async function (req, res) {
         res.json({status: 410});
         return;
     }
+    // var mobileNumber =0;
+    // var checkNumber = req.body.user_name.toString()[0];
+
+    // if (checkNumber==0) 
+    //     mobileNumber = req.body.user_name.substring(1)
+    // else
+    //     mobileNumber = req.body.user_name;
+
+    // console.log(mobileNumber)
+   
     let profile = await mysql.rider.getProfile(parseInt(req.body.user_name));
     switch (profile.status) {
         case('blocked'):
