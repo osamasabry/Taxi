@@ -543,3 +543,9 @@ CREATE TABLE `taxi`.`Trip_Supplier_Notifications` (
 	`Trip_Supplier_Notifications_Type_ID` INT NOT NULL , 
 	PRIMARY KEY (`id`)) 
 ENGINE = InnoDB;
+
+ALTER TABLE `rider` ADD `rider_Language_ID` INT NULL DEFAULT '1' AFTER `notification_player_id`;
+
+ALTER TABLE `Trip_Rider_Notifications` CHANGE `Trip_Rider_Notifications_Date` `Trip_Rider_Notifications_Date` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP;
+
+ALTER TABLE `Trip_Rider_Notifications` CHANGE `Trip_Rider_Notifications_Action ID` `Trip_Rider_Notifications_ActionID` INT(11) NOT NULL;

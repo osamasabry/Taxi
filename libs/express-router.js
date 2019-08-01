@@ -27,16 +27,38 @@ const allowedExt = [
   ];
 
 // 
+// console.log(schedule);
+
+var j = schedule.scheduleJob('16 0 * * *', async function(){
+  try {
+        let date = await mysql.trip.getDate()
+        let results = await mysql.trip.GetUsersNotification(date);
+        for (let result of results){
+            await mysql.trip.InsertRiderNotification(result.Title,result.Body,result.reservation_id,1);
+            await mysql.trip.sendNotifcations(result.notification_player_id,result.Title,result.Body,result.reservation_id,1);
+        }
+    }
+    catch (err) {
+        console.log(err);
+    }
+});
 
 router.post("/test", async function (req, res) {
 
     try {
         
+        let date = await mysql.trip.getDate()
+        let results = await mysql.trip.GetUsersNotification(date);
+
+        for (let result of results){
+            await mysql.trip.InsertRiderNotification(result.Title,result.Body,result.reservation_id,1);
+            await mysql.trip.sendNotifcations(result.notification_player_id,result.Title,result.Body,result.reservation_id,1);
+        }
         // console.log(req.query.text);
         // let result = await mysql.getRowsCustom('GetComplain_View',{},{property:'id',direction:'asc'},0,35,'','');
-        let result = await mysql.trip.getFeaturedTrips(1,1);
+        // let result = await mysql.trip.getFeaturedTrips(1,1);
         // console.log(result);
-        res.json({status: 200, result: result})
+        res.json({status: 200, results: results})
 
     }
     catch (err) {

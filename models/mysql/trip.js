@@ -136,4 +136,54 @@ module.exports = {
         let [result,ignored] = await sql.query("UPDATE Trip_Sub_Suppliers SET notification_supplier_id = ? WHERE User_ID = ?",[notificationSupplierId,user_id]);
         return result.affectedRows;
     },
+
+    updateUserLanguage: async function (Language_ID,user_id) {
+        let [result,ignored] = await sql.query("UPDATE rider SET rider_Language_ID = ? WHERE id = ?",[Language_ID,user_id]);
+        return result.affectedRows;
+    },
+
+    GetUsersNotification: async function (date) {
+        let [result, ignored] = await sql.query("SELECT rider_Language_ID,Reservation_PickupDate,first_name,id as reservation_id,notification_player_id,taxi.FUN_GetNotificationStringByLangAndType(rider_Language_ID,6) As Title ,taxi.FUN_GetNotificationStringByLangAndType(rider_Language_ID,7) As Body FROM taxi.GetNotificationRiderID_View WHERE Reservation_PickupDate = '"+date+"'");
+        return result;
+    },
+
+
+    InsertRiderNotification: async function (title,body,action_id,type) {
+        let result = await sql.query("INSERT INTO Trip_Rider_Notifications (Trip_Rider_Notifications_Title,Trip_Rider_Notifications_Body,Trip_Rider_Notifications_ActionID,Trip_Rider_Notifications_Type_ID) VALUES (?,?,?,?)", [title,body,action_id,type]);
+        return result.affectedRows === 1;
+    },
+
+
+    sendNotifcations: async function (fcm,titlemsg,bodymsg,action_id,type) {
+        var payload = {
+          notification: {
+            title: titlemsg,
+            body: bodymsg
+          },
+          data: {
+            action_id: action_id,
+            type: type
+          }
+        };
+        admin.messaging().sendToDevice(fcm, payload)
+          .then(function(response) {
+            console.log('Successfully sent message:', response.results);
+            return true
+          })
+          .catch(function(error) {
+            return error;
+          });
+    },
+
+    getDate: async function(){
+
+        var currentDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
+        var day = currentDate.getDate()
+        var month = currentDate.getMonth() + 1
+        var year = currentDate.getFullYear()
+
+        today = year + '-' + month + '-' + day;
+
+        return today;
+    }
 };

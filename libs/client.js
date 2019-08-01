@@ -187,6 +187,7 @@ module.exports = function (io) {
             callback(200, requests);
         });
         socket.on('notificationPlayerId', async function (playerId,callback) {
+            console.log(playerId);
             mysql.updateRow(socket.decoded_token.prefix, {notification_player_id: playerId}, socket.decoded_token.id);
             callback(200, 'success');
         });
@@ -559,8 +560,7 @@ module.exports = function (io) {
 
         socket.on('getCities', async function (Lang_ID,callback) {
             try {
-                console.log('oooooooooooooooo')
-                console.log(Lang_ID);
+               
                 let result = await mysql.getRows('GetCitiy_View',{CityLang_Language_ID:Lang_ID});
                 callback(200, result);
             }
@@ -614,6 +614,9 @@ module.exports = function (io) {
             }
         });
 
+
+
+
         socket.on('getFeaturedTrips', async function (Lang_ID,City_Id,callback) {
             try {
                 let result = await mysql.trip.getFeaturedTrips(Lang_ID,City_Id);
@@ -659,7 +662,6 @@ module.exports = function (io) {
 
         socket.on('SaveReservation', async function (buffers,json,callback) {
             try {
-                
                 let result = await mysql.trip.save(json);
                 if (buffers != ''){
                     for (let buffer of buffers)
@@ -720,6 +722,8 @@ module.exports = function (io) {
 
         socket.on('getMyComplain', async function (callback) {
             try {
+
+
                 // console.log('**************************************')
                 // console.log(socket.decoded_token.id);
                 let result = await mysql.trip.getComplain(socket.decoded_token.id);
@@ -864,7 +868,6 @@ module.exports = function (io) {
                 if (buffer != '') {
                     let upload = await mysql.trip.doUploadComplain(buffer,result.argument_id);
                 }
-
                 callback(200, result);
             }
             catch (err) {
@@ -918,6 +921,17 @@ module.exports = function (io) {
             }
             
             callback(200, 'success');
+        });
+
+        socket.on('updateLanguage', async function (Language_ID,callback) {
+            try {
+                let result = await mysql.trip.updateUserLanguage(Language_ID,socket.decoded_token.id);
+                callback(200, result);
+            }
+            catch (err) {
+                callback(666, e.message);
+            }
+
         });
 
     });
