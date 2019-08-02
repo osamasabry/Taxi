@@ -549,3 +549,9 @@ ALTER TABLE `rider` ADD `rider_Language_ID` INT NULL DEFAULT '1' AFTER `notifica
 ALTER TABLE `Trip_Rider_Notifications` CHANGE `Trip_Rider_Notifications_Date` `Trip_Rider_Notifications_Date` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP;
 
 ALTER TABLE `Trip_Rider_Notifications` CHANGE `Trip_Rider_Notifications_Action ID` `Trip_Rider_Notifications_ActionID` INT(11) NOT NULL;
+
+ALTER TABLE `Trip_Rider_Notifications` ADD INDEX( `Trip_Rider_Notifications_ActionID`);
+
+ALTER TABLE `Trip_Rider_Notifications` ADD INDEX( `Trip_Rider_Notifications_Type_ID`);
+
+ALTER TABLE `Trip_Rider_Notifications` ADD `Trip_Rider_Notifications_RiderID` INT NOT NULL AFTER `Trip_Rider_Notifications_Type_ID`, ADD INDEX (`Trip_Rider_Notifications_RiderID`);

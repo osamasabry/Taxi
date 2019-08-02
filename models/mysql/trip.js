@@ -148,26 +148,35 @@ module.exports = {
     },
 
 
-    InsertRiderNotification: async function (title,body,action_id,type) {
-        let result = await sql.query("INSERT INTO Trip_Rider_Notifications (Trip_Rider_Notifications_Title,Trip_Rider_Notifications_Body,Trip_Rider_Notifications_ActionID,Trip_Rider_Notifications_Type_ID) VALUES (?,?,?,?)", [title,body,action_id,type]);
+    InsertRiderNotification: async function (title,body,action_id,type,rider_id) {
+        let result = await sql.query("INSERT INTO Trip_Rider_Notifications (Trip_Rider_Notifications_Title,Trip_Rider_Notifications_Body,Trip_Rider_Notifications_ActionID,Trip_Rider_Notifications_Type_ID,Trip_Rider_Notifications_RiderID) VALUES (?,?,?,?,?)", [title,body,action_id,type,rider_id]);
         return result.affectedRows === 1;
     },
 
 
     sendNotifcations: async function (fcm,titlemsg,bodymsg,action_id,type) {
+        // var payload = {
+        //   notification: {
+        //     title: titlemsg,
+        //     body: bodymsg,
+        //     click_action:action_id
+        //   }
+        // };
+
         var payload = {
           notification: {
             title: titlemsg,
             body: bodymsg
           },
           data: {
-            action_id: action_id,
-            type: type
-          }
+            action: action_id.toString(),
+            Type: type.toString(),
+          },
+          token:fcm
         };
-        admin.messaging().sendToDevice(fcm, payload)
+        admin.messaging().send(payload)
           .then(function(response) {
-            console.log('Successfully sent message:', response.results);
+            console.log('Successfully sent message:', response);
             return true
           })
           .catch(function(error) {
@@ -185,5 +194,5 @@ module.exports = {
         today = year + '-' + month + '-' + day;
 
         return today;
-    }
+    },
 };

@@ -187,7 +187,6 @@ module.exports = function (io) {
             callback(200, requests);
         });
         socket.on('notificationPlayerId', async function (playerId,callback) {
-            console.log(playerId);
             mysql.updateRow(socket.decoded_token.prefix, {notification_player_id: playerId}, socket.decoded_token.id);
             callback(200, 'success');
         });
@@ -932,6 +931,16 @@ module.exports = function (io) {
                 callback(666, e.message);
             }
 
+        });
+
+        socket.on('getRiderNotifications', async function (callback) {
+            try {
+                let result = await mysql.getRows('Trip_Rider_Notifications',{Trip_Rider_Notifications_RiderID:socket.decoded_token.id});
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
         });
 
     });
