@@ -32,7 +32,7 @@ const allowedExt = [
 var j = schedule.scheduleJob('16 0 * * *', async function(){
   try {
         let date = await mysql.trip.getDate()
-        let results = await mysql.trip.GetUsersNotification(date);
+        let results = await mysql.trip.GetUsersNotificationNextDay(date);
         for (let result of results){
             await mysql.trip.InsertRiderNotification(result.Title,result.Body,result.reservation_id,1,result.rider_id);
             await mysql.trip.sendNotifcations(result.notification_player_id,result.Title,result.Body,result.reservation_id,1);
@@ -56,7 +56,7 @@ router.post("/test", async function (req, res) {
         // }
         // console.log(req.query.text);
         // let result = await mysql.getRowsCustom('GetComplain_View',{},{property:'id',direction:'asc'},0,35,'','');
-        let results = await mysql.trip.RiderNotifications(66);
+        let results = await mysql.trip.GetOneUserNotification(66);
         // console.log(result);
         res.json({status: 200, results: results})
 

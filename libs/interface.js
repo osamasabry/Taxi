@@ -164,6 +164,16 @@ module.exports = function (io) {
                     callback(666,error);
             }
         });
+        
+        socket.on('AvailableTrip', async function (Lang_ID,date,count,text,callback) {
+            try {
+                let result = await mysql.trip.getAvailableTrip(Lang_ID,date,count,text);
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
 
         socket.on('getRowsSupplier', async function (table,action ,filers, sort, from, pageSize, fullTextFields, fullTextValue, callback) {
             

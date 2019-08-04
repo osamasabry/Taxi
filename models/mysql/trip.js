@@ -142,11 +142,20 @@ module.exports = {
         return result.affectedRows;
     },
 
-    GetUsersNotification: async function (date) {
+    GetUsersNotificationNextDay: async function (date) {
         let [result, ignored] = await sql.query("SELECT rider_Language_ID,Reservation_PickupDate,first_name,id as reservation_id,notification_player_id,taxi.FUN_GetNotificationStringByLangAndType(rider_Language_ID,6) As Title ,taxi.FUN_GetNotificationStringByLangAndType(rider_Language_ID,7) As Body FROM taxi.GetNotificationRiderID_View WHERE Reservation_PickupDate = '"+date+"'");
         return result;
     },
 
+    GetOneUserNotificationSupplierOnHisWay: async function (rider_id) {
+        let [result, ignored] = await sql.query("SELECT rider_Language_ID,notification_player_id,taxi.FUN_GetNotificationStringByLangAndType(rider_Language_ID,8) As Title ,taxi.FUN_GetNotificationStringByLangAndType(rider_Language_ID,9) As Body FROM rider WHERE id = "+rider_id);
+        return result[0];
+    },
+
+    GetOneUserNotificationReplyComplaint: async function (rider_id) {
+        let [result, ignored] = await sql.query("SELECT rider_Language_ID,notification_player_id,taxi.FUN_GetNotificationStringByLangAndType(rider_Language_ID,10) As Title ,taxi.FUN_GetNotificationStringByLangAndType(rider_Language_ID,11) As Body FROM rider WHERE id = "+rider_id);
+        return result[0];
+    },
 
     InsertRiderNotification: async function (title,body,action_id,type,rider_id) {
         let result = await sql.query("INSERT INTO Trip_Rider_Notifications (Trip_Rider_Notifications_Title,Trip_Rider_Notifications_Body,Trip_Rider_Notifications_ActionID,Trip_Rider_Notifications_Type_ID,Trip_Rider_Notifications_RiderID) VALUES (?,?,?,?,?)", [title,body,action_id,type,rider_id]);
@@ -155,14 +164,6 @@ module.exports = {
 
 
     sendNotifcations: async function (fcm,titlemsg,bodymsg,action_id,type) {
-        // var payload = {
-        //   notification: {
-        //     title: titlemsg,
-        //     body: bodymsg,
-        //     click_action:action_id
-        //   }
-        // };
-
         var payload = {
           notification: {
             title: titlemsg,

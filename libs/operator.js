@@ -599,5 +599,19 @@ module.exports = function (io) {
                 callback(666, e.message);
             }
         });
+
+        socket.on('operatorSendNotification', async function (rider_id,action_id,callback) {
+            try {
+                
+                let res = await mysql.trip.GetOneUserNotificationReplyComplaint(rider_id);
+                await mysql.trip.InsertRiderNotification(res.Title,res.Body,action_id,3,rider_id);
+                await mysql.trip.sendNotifcations(res.notification_player_id,res.Title,res.Body,action_id,3);
+                callback(200, 'success');
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
     });
 };
