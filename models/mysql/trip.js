@@ -4,9 +4,18 @@ module.exports = {
 
     save: async function (json) {
         let [result, ignored] = await sql.query("SELECT taxi.test('"+json+"') as reservation_id");
+        var reserv_id = result[0].reservation_id;
+        var data = JSON.parse(json);
+        let [res, ignored] = await sql.query("select  *, taxi.FUN_GetNotificationStringByLangAndType(1,12) As Title ,taxi.FUN_GetNotificationStringByLangAndType(1,13) As Body from taxi.GetNotificationSupplierID_View where Reservation_Supplier_Trip_ID =" + data.Reservation_Supplier_Trip_ID+" Group By Supplier_ID");
+        await mysql.trip.InsertSupplierNotification(res[0].Title,res[0].Body,reserv_id,4,res[0].Supplier_ID);
+        await mysql.trip.sendNotifcations(res[0].User_Device_ID,res[0].Title,res[0].Body,reserv_id,4);
         return result ;
     },
 
+    InsertSupplierNotification: async function (title,body,action_id,type,supplier_id) {
+        let result = await sql.query("INSERT INTO Trip_Supplier_Notifications (Trip_Supplier_Notifications_Title,Trip_Supplier_Notifications_Body,Trip_Supplier_Notifications_ActionID,Trip_Supplier_Notifications_Type_ID,Trip_Supplier_Notifications_Supplier_ID) VALUES (?,?,?,?,?)", [title,body,action_id,type,supplier_id]);
+        return result.affectedRows === 1;
+    },
     InsertDatabase: async function (reserve_id,relativePath) {
         let result = await sql.query("INSERT INTO Reservation_Attachments (Attachment_FilePath,Attachment_Reservation_ID) VALUES (?,?)", [relativePath,reserve_id]);
         return result.affectedRows === 1;
@@ -29,28 +38,28 @@ module.exports = {
         return true;
     },
 
-    searchTrip: async function (Lang_ID,text) {
-        let [result, ignored] = await sql.query("SELECT Trip_Name ,Trip_OneLineDescription,Trip_Thumbnail_Image_Name,Trip_OnTripIsFeatured_Image_Name ,id,Supplier_Trip_Trip_ID ,price FROM GetTripsWithLang_View WHERE TripLang_Language_ID = "+Lang_ID+"  And Trip_Name like '%"+text+"%'");
+    searchTrip: async function (Lang_ID,text,rider_id) {
+        let [result, ignored] = await sql.query("SELECT select FUN_GetCurrencyStringByLangIDAndRiderID("+Lang_ID+","+rider_id+") as currency_symbol,Trip_Name ,Trip_OneLineDescription,Trip_Thumbnail_Image_Name,Trip_OnTripIsFeatured_Image_Name ,id,Supplier_Trip_Trip_ID ,supplier_trip_id,price FROM GetTripsWithLang_View WHERE TripLang_Language_ID = "+Lang_ID+"  And Trip_Name like '%"+text+"%'");
         return result;
     },
     
-    getFeaturedTrips: async function (Lang_ID,City_id) {
-        let [result, ignored] = await sql.query("select Category_Name,id,Trip_Name,Trip_Thumbnail_Image_Name,Trip_OnTripIsFeatured_Image_Name ,supplier_trip_id,Supplier_Trip_Trip_ID,price From GetTripsWithLang_View  WHERE TripLang_Language_ID = "+Lang_ID+" and Trip_Is_Featured = 1 and  Trip_City_ID = "+City_id);
+    getFeaturedTrips: async function (Lang_ID,City_id,rider_id) {
+        let [result, ignored] = await sql.query("select FUN_GetCurrencyStringByLangIDAndRiderID("+Lang_ID+","+rider_id+") as currency_symbol,Category_Name,id,Trip_Name,Trip_Thumbnail_Image_Name,Trip_OnTripIsFeatured_Image_Name ,supplier_trip_id,Supplier_Trip_Trip_ID,price From GetTripsWithLang_View  WHERE TripLang_Language_ID = "+Lang_ID+" and Trip_Is_Featured = 1 and  Trip_City_ID = "+City_id);
         return result;
     },
 
-    getTripsByCategory: async function (Lang_ID,Category_ID,City_id) {
-        let [result, ignored] = await sql.query("SELECT Categories_Trips_Trip_ID ,Trip_Name,Trip_OneLineDescription,Trip_Thumbnail_Image_Name,supplier_trip_id,Trip_OnTripIsFeatured_Image_Name,Supplier_Trip_Trip_ID ,price ,Trips_Categories_Category_ID from GetTripsWithLang_View WHERE TripLang_Language_ID = "+Lang_ID+" And Trips_Categories_Category_ID = "+Category_ID+" And Trip_City_ID = "+City_id );
+    getTripsByCategory: async function (Lang_ID,Category_ID,City_id,rider_id) {
+        let [result, ignored] = await sql.query("SELECT FUN_GetCurrencyStringByLangIDAndRiderID("+Lang_ID+","+rider_id+") as currency_symbol,Categories_Trips_Trip_ID ,Trip_Name,Trip_OneLineDescription,Trip_Thumbnail_Image_Name,supplier_trip_id,Trip_OnTripIsFeatured_Image_Name,Supplier_Trip_Trip_ID ,price ,Trips_Categories_Category_ID from GetTripsWithLang_View WHERE TripLang_Language_ID = "+Lang_ID+" And Trips_Categories_Category_ID = "+Category_ID+" And Trip_City_ID = "+City_id );
          return result;
     },
  
-    getAvailableTrip: async function (Lang_ID,date,count,text) {
-        let [result, ignored] = await sql.query("SELECT * FROM taxi.SupplierTripsFullDataByAvailableSeats_View WHERE RemainingSeats >= "+count+" And (TripBusyAndSupplierCalenderDate="+date+" or TripBusyAndSupplierCalenderDate IS NULL) And TripLang_Language_ID = " + Lang_ID+" And Trip_Name like '%"+text+"%'");
+    getAvailableTrip: async function (Lang_ID,date,count,text,rider_id) {
+        let [result, ignored] = await sql.query("SELECT * , FUN_GetCurrencyStringByLangIDAndRiderID("+Lang_ID+","+rider_id+") as currency_symbol FROM taxi.SupplierTripsFullDataByAvailableSeats_View WHERE RemainingSeats >= "+count+" And (TripBusyAndSupplierCalenderDate="+date+" or TripBusyAndSupplierCalenderDate IS NULL) And TripLang_Language_ID = " + Lang_ID+" And Trip_Name like '%"+text+"%'");
          return result;
     },
     
-    getOneRow: async function (Lang_id,Supplier_Trip_Trip_ID) {
-        let [result, ignored] = await sql.query("select * from taxi.GetTripFullDataWithImages_View where supplier_trip_id =" + Supplier_Trip_Trip_ID+ " AND TripLang_Language_ID = " + Lang_id);
+    getOneRow: async function (Lang_ID,Supplier_Trip_Trip_ID,rider_id) {
+        let [result, ignored] = await sql.query("select * , FUN_GetCurrencyStringByLangIDAndRiderID("+Lang_ID+","+rider_id+") as currency_symbol from taxi.GetTripFullDataWithImages_View  where supplier_trip_id =" + Supplier_Trip_Trip_ID+ " AND TripLang_Language_ID = " + Lang_ID);
         return result;
     },
 
@@ -88,7 +97,11 @@ module.exports = {
 
     getComplain: async function (rider_id) {
         let [result, ignored] = await sql.query("select * from taxi.GetComplain_View where Complain_Rider_ID =" + rider_id);
-        console.log(result);
+        return result;
+    },
+
+    getOneComplain: async function (complaint_id) {
+        let [result, ignored] = await sql.query("select * from taxi.GetComplain_View where id =" + complaint_id);
         return result;
     },
 
@@ -138,6 +151,7 @@ module.exports = {
     },
 
     updateUserLanguage: async function (Language_ID,user_id) {
+        console.log("UPDATE rider SET rider_Language_ID = ? WHERE id = ?",[Language_ID,user_id])
         let [result,ignored] = await sql.query("UPDATE rider SET rider_Language_ID = ? WHERE id = ?",[Language_ID,user_id]);
         return result.affectedRows;
     },
@@ -161,7 +175,6 @@ module.exports = {
         let result = await sql.query("INSERT INTO Trip_Rider_Notifications (Trip_Rider_Notifications_Title,Trip_Rider_Notifications_Body,Trip_Rider_Notifications_ActionID,Trip_Rider_Notifications_Type_ID,Trip_Rider_Notifications_RiderID) VALUES (?,?,?,?,?)", [title,body,action_id,type,rider_id]);
         return result.affectedRows === 1;
     },
-
 
     sendNotifcations: async function (fcm,titlemsg,bodymsg,action_id,type) {
         var payload = {

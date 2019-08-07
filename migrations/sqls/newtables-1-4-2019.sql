@@ -555,3 +555,7 @@ ALTER TABLE `Trip_Rider_Notifications` ADD INDEX( `Trip_Rider_Notifications_Acti
 ALTER TABLE `Trip_Rider_Notifications` ADD INDEX( `Trip_Rider_Notifications_Type_ID`);
 
 ALTER TABLE `Trip_Rider_Notifications` ADD `Trip_Rider_Notifications_RiderID` INT NOT NULL AFTER `Trip_Rider_Notifications_Type_ID`, ADD INDEX (`Trip_Rider_Notifications_RiderID`);
+
+ALTER TABLE `Trip_Supplier_Notifications` ADD `Trip_Supplier_Notifications_Supplier_ID` INT NOT NULL AFTER `Trip_Supplier_Notifications_Type_ID`;
+
+ALTER TABLE `Trip_Supplier_Notifications` CHANGE `Trip_Supplier_Notifications_Date` `Trip_Supplier_Notifications_Date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;

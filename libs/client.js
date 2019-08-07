@@ -559,7 +559,7 @@ module.exports = function (io) {
 
         socket.on('getCities', async function (Lang_ID,callback) {
             try {
-               
+                console.log('city')
                 let result = await mysql.getRows('GetCitiy_View',{CityLang_Language_ID:Lang_ID});
                 callback(200, result);
             }
@@ -605,7 +605,7 @@ module.exports = function (io) {
         socket.on('getTrip', async function (Lang_ID,Supplier_Trip_Trip_ID,callback) {
             try {
 
-                let result = await mysql.trip.getOneRow(Lang_ID,Supplier_Trip_Trip_ID);
+                let result = await mysql.trip.getOneRow(Lang_ID,Supplier_Trip_Trip_ID,socket.decoded_token.id);
                 callback(200, result[0]);
             }
             catch (e) {
@@ -614,11 +614,9 @@ module.exports = function (io) {
         });
 
 
-
-
         socket.on('getFeaturedTrips', async function (Lang_ID,City_Id,callback) {
             try {
-                let result = await mysql.trip.getFeaturedTrips(Lang_ID,City_Id);
+                let result = await mysql.trip.getFeaturedTrips(Lang_ID,City_Id,socket.decoded_token.id);
                 callback(200, result);
             }
             catch (e) {
@@ -629,7 +627,7 @@ module.exports = function (io) {
         socket.on('getTripsByCategory', async function (Lang_ID,Category_ID,City_Id,callback) {
             try {
 
-                let result = await mysql.trip.getTripsByCategory(Lang_ID,Category_ID,City_Id);
+                let result = await mysql.trip.getTripsByCategory(Lang_ID,Category_ID,City_Id,socket.decoded_token.id);
                 callback(200, result);
             }
             catch (e) {
@@ -651,7 +649,7 @@ module.exports = function (io) {
         socket.on('getTripsByName', async function (Lang_ID,text,callback) {
             try {
 
-                let result = await mysql.trip.searchTrip(Lang_ID,text);
+                let result = await mysql.trip.searchTrip(Lang_ID,text,socket.decoded_token.id);
                 callback(200, result);
             }
             catch (e) {
@@ -675,7 +673,7 @@ module.exports = function (io) {
 
         socket.on('AvailableTrip', async function (Lang_ID,date,count,text,callback) {
             try {
-                let result = await mysql.trip.getAvailableTrip(Lang_ID,date,count,text);
+                let result = await mysql.trip.getAvailableTrip(Lang_ID,date,count,text,socket.decoded_token.id);
                 callback(200, result);
             }
             catch (e) {
@@ -924,11 +922,12 @@ module.exports = function (io) {
 
         socket.on('updateLanguage', async function (Language_ID,callback) {
             try {
+
                 let result = await mysql.trip.updateUserLanguage(Language_ID,socket.decoded_token.id);
                 callback(200, result);
             }
             catch (err) {
-                callback(666, e.message);
+                callback(666, err.message);
             }
 
         });
@@ -943,13 +942,47 @@ module.exports = function (io) {
             }
         });
 
+        socket.on('getOneComplaint', async function (complaint_id,callback) {
+            try {
+                let result = await mysql.trip.getOneComplain(complaint_id);
+                console.log(result);
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
         socket.on('supplierSendNotification', async function (rider_id,action_id,callback) {
             try {
                 
                 let res = await mysql.trip.GetOneUserNotificationSupplierOnHisWay(rider_id);
-                await mysql.trip.InsertRiderNotification(res.Title,res.Body,action_id,2,rider_id);
-                await mysql.trip.sendNotifcations(res.notification_player_id,res.Title,res.Body,action_id,2);
+                await mysql.trip.InsertRiderNotification(res[0].Title,res[0].Body,action_id,2,rider_id);
+                await mysql.trip.sendNotifcations(res[0].notification_player_id,res[0].Title,res[0].Body,action_id,2);
                 callback(200, 'success');
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
+        socket.on('paymentStatus', async function (callback) {
+            try {
+                if (1==2) 
+                    callback(200, true);
+                else
+                    callback(200, false);
+            }
+            catch (err) {
+                callback(666, err.message);
+            }
+
+        });
+
+        socket.on('getSupplierNotifications', async function (callback) {
+            try {
+                let result = await mysql.getRows('Trip_Supplier_Notifications',{Trip_Supplier_Notifications_Supplier_ID:socket.decoded_token.id});
+                callback(200, result);
             }
             catch (e) {
                 callback(666, e.message);
