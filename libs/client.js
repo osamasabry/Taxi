@@ -705,10 +705,10 @@ module.exports = function (io) {
             try {
                 
                 let result = await mysql.trip.saveComplain(json);
-            
+                console.log(result);
                 if (buffers != '' ){ 
-                    for (let buffer of buffers)
-                        await mysql.trip.doUploadComplain(buffer,result.argument_id);
+                   // for (let buffer of buffers)
+                        await mysql.trip.doUploadComplain(buffers,result.argument_id);
                 }
                 callback(200, 'success');
             }
@@ -860,14 +860,18 @@ module.exports = function (io) {
 
         socket.on('replayComplain', async function (buffer,date,text,issued_by,complain_id,callback) {
             try {
+                console.log(buffer)
                 let result = await mysql.trip.replayComplain(date,text,1,complain_id);
-                
+                console.log(result);
                 if (buffer != '') {
-                    let upload = await mysql.trip.doUploadComplain(buffer,result.argument_id);
+                console.log(buffer)
+
+                    let upload = await mysql.trip.doUploadComplain(buffer,result);
                 }
-                callback(200, result);
+                callback(200, 'success');
             }
             catch (err) {
+                console.log(err.message)
                callback(666, err.message);
             }
 
@@ -887,7 +891,7 @@ module.exports = function (io) {
 
         socket.on('updateStatusComplain', async function (complain_id,callback) {
             try {
-                let result = await mysql.trip.updateStatusComplain(complain_id);
+                let result = await mysql.trip.updateStatusComplain(4,complain_id);
                 callback(200, result);
             }
             catch (err) {
@@ -911,10 +915,11 @@ module.exports = function (io) {
 
         socket.on('notificationSupplierId', async function (supplier_id,notificationSupplierId,callback) {
             let supplier = await mysql.getOneRow('Trip_Sub_Suppliers', {User_ID: socket.decoded_token.id});
+            console.log(supplier);
             if (supplier){
-                mysql.trip.updateNotificationSupplier(notificationSupplierId, socket.decoded_token.id);
+                await mysql.trip.updateNotificationSupplier(User_Device_ID, socket.decoded_token.id);
             }else{
-                mysql.insertRow('Trip_Sub_Suppliers', {notification_supplier_id: notificationSupplierId, User_ID:socket.decoded_token.id ,Supplier_ID:supplier_id});
+                await mysql.insertRow('Trip_Sub_Suppliers', {User_Device_ID: notificationSupplierId, User_ID:socket.decoded_token.id ,Supplier_ID:supplier_id});
             }
             
             callback(200, 'success');
@@ -945,7 +950,6 @@ module.exports = function (io) {
         socket.on('getOneComplaint', async function (complaint_id,callback) {
             try {
                 let result = await mysql.trip.getOneComplain(complaint_id);
-                console.log(result);
                 callback(200, result);
             }
             catch (e) {
@@ -955,7 +959,6 @@ module.exports = function (io) {
 
         socket.on('supplierSendNotification', async function (rider_id,action_id,callback) {
             try {
-                
                 let res = await mysql.trip.GetOneUserNotificationSupplierOnHisWay(rider_id);
                 await mysql.trip.InsertRiderNotification(res[0].Title,res[0].Body,action_id,2,rider_id);
                 await mysql.trip.sendNotifcations(res[0].notification_player_id,res[0].Title,res[0].Body,action_id,2);

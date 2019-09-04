@@ -16,11 +16,24 @@ const bluebird = require('bluebird');
 global.fs = bluebird.promisifyAll(require("fs"));
 global.OneSignal = require('onesignal-node');
 
+global.schedule = require('node-schedule');
+
 global.notificationClient = new OneSignal.Client({
     // userAuthKey: process.env.ONESIGNAL_USER_AUTH_KEY,
     userAuthKey:'OWM1YmE1ZDctMmY4Yy00NjIyLTkyY2QtM2JkYjczMGMzZTg5',
     app: { appAuthKey:'MzE4YzM1MzktNmQ4Ni00NzM2LTg3NzEtYzg5ZDNmMDUwMDM3', appId: 'ddbb2130-86cc-49c7-b40a-29344dd93524' }
 });
+
+global.admin = require("firebase-admin");
+// var FCM = require('fcm-node');
+
+var serviceAccount = require("/home/server-node-files/brightways-and-going-project-firebase-adminsdk-zpdsr-84505918d8.json");
+//global.fcm = new FCM(serviceAccount);
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://brightways-and-going-project.firebaseio.com"
+});
+
 const bodyParser = require('body-parser');
 // rp({uri: 'http://31.220.15.49:9000/verify?purchaseCode=6b996707-a58a-47c6-82e2-cc0d12e73737', headers: { 'User-Agent': 'node.js' }, json: true}).then(function(result) {
 //     if(result.status === "OK") {

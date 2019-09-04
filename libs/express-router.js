@@ -183,7 +183,8 @@ router.post('/rider_login', async function (req, res) {
         return;
     }
     // var mobileNumber =0;
-    // var checkNumber = req.body.user_name.toString()[0];
+    console.log("user_name");
+    console.log(req.body.user_name);
 
     // if (checkNumber==0) 
     //     mobileNumber = req.body.user_name.substring(1)
@@ -193,6 +194,8 @@ router.post('/rider_login', async function (req, res) {
     // console.log(mobileNumber)
    
     let profile = await mysql.rider.getProfile(parseInt(req.body.user_name));
+    console.log("profile");
+    console.log(profile);
     switch (profile.status) {
         case('blocked'):
             res.json({status: 412});
@@ -203,6 +206,8 @@ router.post('/rider_login', async function (req, res) {
         prefix: riderPrefix
     };
     let token = jwt.sign(keys, jwtToken, {});
+    console.log("token");
+    console.log(token);
     res.json({status: 200, token: token, user: profile});
 });
 

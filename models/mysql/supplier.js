@@ -23,7 +23,7 @@ module.exports = {
     },
 
     getComplainSupplier: async function (supplier_id) {
-        let [result, ignored] = await sql.query("select * from taxi.GetSupplierComplain_View where Supplier_Trip_Supplier_ID =" + supplier_id);
+        let [result, ignored] = await sql.query("select * from taxi.GetSupplierComplain_View where Supplier_ID =" + supplier_id);
         return result;
     },
 

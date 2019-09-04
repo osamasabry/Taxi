@@ -14,6 +14,7 @@
     "db-migrate-mysql": "^1.1.10",
     "dotenv": "^4.0.0",
     "express": "^4.16.3",
+    "fcm-node": "^1.5.1",
     "firebase-admin": "^8.3.0",
     "geolib": "^2.0.24",
     "jsonwebtoken": "^7.4.3",
