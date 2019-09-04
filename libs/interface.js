@@ -167,7 +167,7 @@ module.exports = function (io) {
         
         socket.on('AvailableTrip', async function (Lang_ID,date,count,text,callback) {
             try {
-                let result = await mysql.trip.getAvailableTrip(Lang_ID,date,count,text);
+                let result = await mysql.trip.getAvailableTripInterface(Lang_ID,date,count,text);
                 callback(200, result);
             }
             catch (e) {

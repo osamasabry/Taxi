@@ -23,7 +23,7 @@ module.exports = {
     },
 
     getComplainSupplier: async function (supplier_id) {
-        let [result, ignored] = await sql.query("select * from taxi.GetSupplierComplain_View where Supplier_Trip_Supplier_ID =" + supplier_id);
+        let [result, ignored] = await sql.query("select * from taxi.GetSupplierComplain_View where Supplier_ID =" + supplier_id);
         return result;
     },
 
@@ -47,6 +47,7 @@ module.exports = {
     },
 
     getReservationTripsSupplier: async function (city_id,date,supplier_id) {
+        // console.log(city_id,date,supplier_id)
         var queryText = 'SELECT Trip_Supplier_Trip_ID,'
                         +"Trip_Name,"
                         +"Supplier_Trip_AdultAddedFee,"
@@ -54,20 +55,20 @@ module.exports = {
                         +"Supplier_Trip_Supplier_ID,"
                         +"Trip_City_ID,"
                         +"taxi.FUN_GetSumACIForReservationByDate(Trip_Supplier_Trip_ID, '"+date+"') As SumACI,"
-                        +"taxi.FUN_CheckIfTripIsAvilableForReservation(Trip_Supplier_Trip_ID,'"+ date +"') as IsAvilableForReservation"
+                        +"taxi.FUN_CheckIfTripIsAvilableForReservation(Trip_Supplier_Trip_ID,'"+date+"') as IsAvilableForReservation"
                         +" from taxi.SupplierTripsWithReservationMiniData_View where Trip_City_ID ="+city_id+" And Supplier_Trip_Supplier_ID ="+supplier_id;
-        console.log(queryText);
+        // console.log(queryText);
         let [result, ignored] = await sql.query(queryText);
+        // console.log(result);
         return result;
     },
 
-    getReservationTripDetails: async function (supplier_trip_id) {
-        let [result, ignored] = await sql.query("select * from taxi.GetReservationBySupplierTripID where Reservation_Supplier_Trip_ID = "+supplier_trip_id);
+    getReservationTripDetails: async function (date,supplier_trip_id) {
+        let [result, ignored] = await sql.query("select * from taxi.GetReservationBySupplierTripID where Reservation_Supplier_Trip_ID = "+supplier_trip_id+" AND Reservation_PickupDate = '"+date+"' ");
         return result;
     },
 
     getReservationSupplierFinancials: async function (from,to,supplier_id) {
-        console.log("select * from Trips_Reservation_Supplier_Financials where Reservation_Supplier_Financials_ActionDate BETWEEN '"+from+"' AND '"+to+"' AND Reservation_Supplier_Financials_Supplier_ID ="+ supplier_id);
         let [result, ignored] = await sql.query("select * from Trips_Reservation_Supplier_Financials where Reservation_Supplier_Financials_ActionDate BETWEEN '"+from+"' AND '"+to+"' AND Reservation_Supplier_Financials_Supplier_ID ="+ supplier_id);
         return result;
     },

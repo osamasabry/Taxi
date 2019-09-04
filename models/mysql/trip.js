@@ -2,14 +2,21 @@ const shortId = require('shortid');
 
 module.exports = {
 
-    save: async function (json) {
-        let [result, ignored] = await sql.query("SELECT taxi.test('"+json+"') as reservation_id");
+    save: async function (json,is_Document) {
+        let [result, ignored] = await sql.query("SELECT taxi.FUN_AddReservation('"+json+"',"+is_Document+") as reservation_id");
         var reserv_id = result[0].reservation_id;
         var data = JSON.parse(json);
-        let [res, ignored] = await sql.query("select  *, taxi.FUN_GetNotificationStringByLangAndType(1,12) As Title ,taxi.FUN_GetNotificationStringByLangAndType(1,13) As Body from taxi.GetNotificationSupplierID_View where Reservation_Supplier_Trip_ID =" + data.Reservation_Supplier_Trip_ID+" Group By Supplier_ID");
-        await mysql.trip.InsertSupplierNotification(res[0].Title,res[0].Body,reserv_id,4,res[0].Supplier_ID);
-        await mysql.trip.sendNotifcations(res[0].User_Device_ID,res[0].Title,res[0].Body,reserv_id,4);
+        var res = await this.getSupplierNotification(data.Reservation_Supplier_Trip_ID);
+        if (res) {
+            await this.InsertSupplierNotification(res.Title,res.Body,reserv_id,4,res.Supplier_ID);
+            await this.sendNotifcations(res.User_Device_ID,res.Title,res.Body,reserv_id,4);
+        }
         return result ;
+    },
+
+    getSupplierNotification: async function (supplier_trip_id) {
+        let [result, ignored] = await sql.query("select  *, taxi.FUN_GetNotificationStringByLangAndType(1,12) As Title ,taxi.FUN_GetNotificationStringByLangAndType(1,13) As Body from taxi.GetNotificationSupplierID_View where Reservation_Supplier_Trip_ID =" +supplier_trip_id+" Group By Supplier_ID");
+        return result[0];
     },
 
     InsertSupplierNotification: async function (title,body,action_id,type,supplier_id) {
@@ -39,28 +46,66 @@ module.exports = {
     },
 
     searchTrip: async function (Lang_ID,text,rider_id) {
-        let [result, ignored] = await sql.query("SELECT select FUN_GetCurrencyStringByLangIDAndRiderID("+Lang_ID+","+rider_id+") as currency_symbol,Trip_Name ,Trip_OneLineDescription,Trip_Thumbnail_Image_Name,Trip_OnTripIsFeatured_Image_Name ,id,Supplier_Trip_Trip_ID ,supplier_trip_id,price FROM GetTripsWithLang_View WHERE TripLang_Language_ID = "+Lang_ID+"  And Trip_Name like '%"+text+"%'");
+        var Fact = await this.getFactor(rider_id);
+        let [result, ignored] = await sql.query("SELECT FUN_GetCurrencyStringByLangIDAndRiderID("+Lang_ID+","+rider_id+") as currency_symbol,Trip_Name ,Trip_OneLineDescription,Trip_Thumbnail_Image_Name,Trip_OnTripIsFeatured_Image_Name ,id,Supplier_Trip_Trip_ID ,supplier_trip_id,Cast(FLOOR(price * "+Fact+")as UNSIGNED) as price FROM GetTripsWithLang_View WHERE TripLang_Language_ID = "+Lang_ID+"  And Trip_Name like '%"+text+"%'");
         return result;
     },
     
     getFeaturedTrips: async function (Lang_ID,City_id,rider_id) {
-        let [result, ignored] = await sql.query("select FUN_GetCurrencyStringByLangIDAndRiderID("+Lang_ID+","+rider_id+") as currency_symbol,Category_Name,id,Trip_Name,Trip_Thumbnail_Image_Name,Trip_OnTripIsFeatured_Image_Name ,supplier_trip_id,Supplier_Trip_Trip_ID,price From GetTripsWithLang_View  WHERE TripLang_Language_ID = "+Lang_ID+" and Trip_Is_Featured = 1 and  Trip_City_ID = "+City_id);
+        var Fact = await this.getFactor(rider_id);
+        let [result, ignored] = await sql.query("select FUN_GetCurrencyStringByLangIDAndRiderID("+Lang_ID+","+rider_id+") as currency_symbol,Category_Name,id,Trip_Name,Trip_Thumbnail_Image_Name,Trip_OnTripIsFeatured_Image_Name ,supplier_trip_id,Supplier_Trip_Trip_ID,Cast(FLOOR(price * "+Fact+")as UNSIGNED) as price From GetTripsWithLang_View  WHERE TripLang_Language_ID = "+Lang_ID+" and Trip_Is_Featured = 1 and  Trip_City_ID = "+City_id);
         return result;
     },
 
+   
     getTripsByCategory: async function (Lang_ID,Category_ID,City_id,rider_id) {
-        let [result, ignored] = await sql.query("SELECT FUN_GetCurrencyStringByLangIDAndRiderID("+Lang_ID+","+rider_id+") as currency_symbol,Categories_Trips_Trip_ID ,Trip_Name,Trip_OneLineDescription,Trip_Thumbnail_Image_Name,supplier_trip_id,Trip_OnTripIsFeatured_Image_Name,Supplier_Trip_Trip_ID ,price ,Trips_Categories_Category_ID from GetTripsWithLang_View WHERE TripLang_Language_ID = "+Lang_ID+" And Trips_Categories_Category_ID = "+Category_ID+" And Trip_City_ID = "+City_id );
+        var Fact = await this.getFactor(rider_id);
+        let [result, ignored] = await sql.query("SELECT FUN_GetCurrencyStringByLangIDAndRiderID("+Lang_ID+","+rider_id+") as currency_symbol,Categories_Trips_Trip_ID ,Trip_Name,Trip_OneLineDescription,Trip_Thumbnail_Image_Name,supplier_trip_id,Trip_OnTripIsFeatured_Image_Name,Supplier_Trip_Trip_ID ,Cast(FLOOR(price * "+Fact+")as UNSIGNED) as price ,Trips_Categories_Category_ID from GetTripsWithLang_View WHERE TripLang_Language_ID = "+Lang_ID+" And Trips_Categories_Category_ID = "+Category_ID+" And Trip_City_ID = "+City_id );
          return result;
     },
  
     getAvailableTrip: async function (Lang_ID,date,count,text,rider_id) {
-        let [result, ignored] = await sql.query("SELECT * , FUN_GetCurrencyStringByLangIDAndRiderID("+Lang_ID+","+rider_id+") as currency_symbol FROM taxi.SupplierTripsFullDataByAvailableSeats_View WHERE RemainingSeats >= "+count+" And (TripBusyAndSupplierCalenderDate="+date+" or TripBusyAndSupplierCalenderDate IS NULL) And TripLang_Language_ID = " + Lang_ID+" And Trip_Name like '%"+text+"%'");
+        var Fact = await this.getFactor(rider_id);
+        let [result, ignored] = await sql.query("SELECT id,Trip_Thumbnail_Image_Name,Trip_OnTripIsFeatured_Image_Name,Trip_Is_Featured,Trip_Is_Active,Supplier_Trip_Trip_ID,Supplier_Name,Supplier_Trip_AdultCost,Supplier_Trip_AdultAddedFee,Supplier_Trip_ChildCost,Supplier_Trip_ChildAddedFee,Supplier_Trip_AvailableSeats,Cast(FLOOR(price * "+Fact+")as UNSIGNED) as price,TripChildFinalPrice,Supplier_Trip_Supplier_ID,TripBusyAndSupplierCalenderDate,SupplierTripCalendarMaxReservations,TripsBusyCount,MaxAvailableSeats,RemainingSeats,Trip_Name,TripLang_Language_ID,TripLang_Trip_ID,Trip_OneLineDescription, FUN_GetCurrencyStringByLangIDAndRiderID("+Lang_ID+","+rider_id+") as currency_symbol FROM taxi.SupplierTripsFullDataByAvailableSeats_View WHERE RemainingSeats >= "+count+" And (TripBusyAndSupplierCalenderDate="+date+" or TripBusyAndSupplierCalenderDate IS NULL) And TripLang_Language_ID = " + Lang_ID+" And Trip_Name like '%"+text+"%'");
+         return result;
+    },
+
+    getAvailableTripInterface: async function (Lang_ID,date,count,text) {
+        let [result, ignored] = await sql.query("SELECT id,Trip_Thumbnail_Image_Name,Trip_OnTripIsFeatured_Image_Name,Trip_Is_Featured,Trip_Is_Active,Supplier_Trip_Trip_ID,Supplier_Name,Supplier_Trip_AdultCost,Supplier_Trip_AdultAddedFee,Supplier_Trip_ChildCost,Supplier_Trip_ChildAddedFee,Supplier_Trip_AvailableSeats,TripChildFinalPrice,Supplier_Trip_Supplier_ID,TripBusyAndSupplierCalenderDate,SupplierTripCalendarMaxReservations,TripsBusyCount,MaxAvailableSeats,RemainingSeats,Trip_Name,TripLang_Language_ID,TripLang_Trip_ID,Trip_OneLineDescription, Cast(FLOOR(price * FUN_GetEgyptionPoundPricingFactor())as UNSIGNED) as PriceWithFactor FROM taxi.SupplierTripsFullDataByAvailableSeats_View WHERE RemainingSeats >= "+count+" And (TripBusyAndSupplierCalenderDate="+date+" or TripBusyAndSupplierCalenderDate IS NULL) And TripLang_Language_ID = " + Lang_ID+" And Trip_Name like '%"+text+"%'");
          return result;
     },
     
     getOneRow: async function (Lang_ID,Supplier_Trip_Trip_ID,rider_id) {
-        let [result, ignored] = await sql.query("select * , FUN_GetCurrencyStringByLangIDAndRiderID("+Lang_ID+","+rider_id+") as currency_symbol from taxi.GetTripFullDataWithImages_View  where supplier_trip_id =" + Supplier_Trip_Trip_ID+ " AND TripLang_Language_ID = " + Lang_ID);
+        var Fact = await this.getFactor(rider_id);
+        let [result, ignored] = await sql.query("select Trip_Creation_Date,"
+                                +"Trip_MoveTime,Trip_Docs_Is_Required,"
+                                +"Trip_Thumbnail_Image_Name,Trip_OnTripIsFeatured_Image_Name,"
+                                +"Trip_PaymentShouldBeInAdvance,Trip_PaymentCanBeInCashOnSupplier,"
+                                +"Trip_PaymentCanBeInCreditCard,Trip_Is_Active,Trip_City_ID,"
+                                +"Trip_Is_Featured,"
+                                +"Cast(FLOOR(PriceAdult * "+Fact+")as UNSIGNED) as PriceAdult,"
+                                +"Cast(FLOOR(PriceChild * "+Fact+")as UNSIGNED) as PriceChild,"
+                                +"Cast(FLOOR(PriceInfant * "+Fact+")as UNSIGNED) as PriceInfant,"
+                                +"Supplier_Trip_AddToSupplierDate,AdditionalImages,"
+                                +"supplier_trip_id,Supplier_ID,"
+                                +"Cast(FLOOR(Supplier_Trip_AdultCost * "+Fact+")as UNSIGNED) as Supplier_Trip_AdultCost,"
+                                +"Cast(FLOOR(Supplier_Trip_AdultAddedFee * "+Fact+")as UNSIGNED) as Supplier_Trip_AdultAddedFee,"
+                                +"Cast(FLOOR(Supplier_Trip_ChildCost * "+Fact+")as UNSIGNED) as Supplier_Trip_ChildCost,"
+                                +"Cast(FLOOR(Supplier_Trip_ChildAddedFee * "+Fact+")as UNSIGNED) as Supplier_Trip_ChildAddedFee,"
+                                +"Cast(FLOOR(Supplier_Trip_InfantCost * "+Fact+")as UNSIGNED) as Supplier_Trip_InfantCost,"
+                                +"Cast(FLOOR(Supplier_Trip_InfantAddedFee * "+Fact+")as UNSIGNED) as Supplier_Trip_InfantAddedFee,"
+                                +"Supplier_Trip_AvailableSeats,"
+                                +"Trip_Video,Trip_Name,Trip_Description,Trip_OneLineDescription,"
+                                +"Trip_Permalink,Trip_Prerequisite_Details,Trip_Duration,"
+                                +"Trip_Docs_Details,TripLang_Language_ID,TripLang_Trip_ID,"
+                                +"Trip_CoverPage_Name,id," 
+                                +"FUN_GetCurrencyStringByLangIDAndRiderID("+Lang_ID+","+rider_id+") as currency_symbol from taxi.GetTripFullDataWithImages_View  where supplier_trip_id =" + Supplier_Trip_Trip_ID+ " AND TripLang_Language_ID = " + Lang_ID);
         return result;
+    },
+
+    getFactor: async function (rider_id) {
+        let [result, ignored] = await sql.query("select FUN_GetEgyptionPoundPricingFactorByRiderID("+rider_id+") as factor");
+        return result[0].factor;
     },
 
     ReservationTrips: async function (Lang_ID,rider_id) {
@@ -121,13 +166,11 @@ module.exports = {
     },
 
     replayComplain: async function (date,text,issued_by,complain_id) {
-  
-        let res = await sql.query("UPDATE Complain SET Complain_Status_ID = 3 WHERE id = ?",[complain_id]);
-        
-        let result = await sql.query("INSERT INTO Complain_Arguments (ComplainArgument_Date,ComplainArgument_Details,ComplainArgument_IssuedBy_Type,ComplainArgument_Complain_ID) VALUES (?,?,?,?)", [date,text,issued_by,complain_id]);
-        let [id,ignored]  = await sql.query("SELECT LAST_INSERT_ID() as argument_id;");
-        // console.log (id);
-        return id[0];
+        var res = await this.updateStatusComplain(3,complain_id)
+        var result = await sql.query("INSERT INTO Complain_Arguments (ComplainArgument_Date,ComplainArgument_Details,ComplainArgument_IssuedBy_Type,ComplainArgument_Complain_ID) VALUES (?,?,?,?) ", [date,text,issued_by,complain_id]);
+        //let [id,ignored]  = await sql.query("SELECT LAST_INSERT_ID() as argument_id;");
+        console.log(result[0].insertId)
+        return result[0].insertId;
     },
 
     getreplayComplain: async function (complain_id) {
@@ -140,18 +183,17 @@ module.exports = {
          return result;
     },
 
-    updateStatusComplain: async function (complain_id) {
-        let [result,ignored] = await sql.query("UPDATE Complain SET Complain_Status_ID = 4 WHERE id = ?",[complain_id]);
+    updateStatusComplain: async function (status_id,complain_id) {
+        let [result,ignored] = await sql.query("UPDATE Complain SET Complain_Status_ID = ? WHERE id = ?",[status_id,complain_id]);
         return result.affectedRows;
     },
 
     updateNotificationSupplier: async function (notificationSupplierId,user_id) {
-        let [result,ignored] = await sql.query("UPDATE Trip_Sub_Suppliers SET notification_supplier_id = ? WHERE User_ID = ?",[notificationSupplierId,user_id]);
+        let [result,ignored] = await sql.query("UPDATE Trip_Sub_Suppliers SET User_Device_ID = ? WHERE User_ID = ?",[notificationSupplierId,user_id]);
         return result.affectedRows;
     },
 
     updateUserLanguage: async function (Language_ID,user_id) {
-        console.log("UPDATE rider SET rider_Language_ID = ? WHERE id = ?",[Language_ID,user_id])
         let [result,ignored] = await sql.query("UPDATE rider SET rider_Language_ID = ? WHERE id = ?",[Language_ID,user_id]);
         return result.affectedRows;
     },
