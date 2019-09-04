@@ -2,8 +2,8 @@ const shortId = require('shortid');
 
 module.exports = {
 
-    save: async function (json) {
-        let [result, ignored] = await sql.query("SELECT taxi.FUN_AddReservation('"+json+"') as reservation_id");
+    save: async function (json,is_Document) {
+        let [result, ignored] = await sql.query("SELECT taxi.FUN_AddReservation('"+json+"',"+is_Document+") as reservation_id");
         var reserv_id = result[0].reservation_id;
         var data = JSON.parse(json);
         var res = await this.getSupplierNotification(data.Reservation_Supplier_Trip_ID);
@@ -166,7 +166,6 @@ module.exports = {
     },
 
     replayComplain: async function (date,text,issued_by,complain_id) {
-        console.log(complain_id)
         var res = await this.updateStatusComplain(3,complain_id)
         var result = await sql.query("INSERT INTO Complain_Arguments (ComplainArgument_Date,ComplainArgument_Details,ComplainArgument_IssuedBy_Type,ComplainArgument_Complain_ID) VALUES (?,?,?,?) ", [date,text,issued_by,complain_id]);
         //let [id,ignored]  = await sql.query("SELECT LAST_INSERT_ID() as argument_id;");

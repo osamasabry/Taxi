@@ -613,5 +613,15 @@ module.exports = function (io) {
             }
         });
 
+        socket.on('getReports', async function (tableName,filters,column,date1,date2,callback) {
+            try {
+                let result = await mysql.getReportRows(tableName,filters,column,date1,date2);
+                callback(200, result);
+            }
+            catch (e) {
+                callback(666, e.message);
+            }
+        });
+
     });
 };

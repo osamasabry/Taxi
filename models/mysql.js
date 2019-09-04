@@ -59,6 +59,34 @@ module.exports = {
         result = await this.attachForeignKey(result, foreignKeys[tableName]);
         return result[0];
     },
+
+    getReportRows: async function (table, filers, column, date1, date2) {
+        let query = '';
+        let whereClauses = [];
+        let queryArguments = [];
+        let  cond = '';
+        let result = '';
+        for (const filter in filers) {
+            if (filers.hasOwnProperty(filter) && filers[filter] && filers[filter] !== '') {
+                whereClauses.push(filter + "= ?");
+                queryArguments.push(filers[filter]);
+            }
+        }
+        if (whereClauses.length > 0)
+            query += " WHERE " + whereClauses.join(" AND ");
+
+        if (date1.length > 0 && date2.length > 0 && Object.keys(filers).length > 0)
+            cond += " And "+column+" BETWEEN '"+date1+"' AND '"+date2+"'";
+        else if (date1.length > 0 && date2.length > 0 && Object.keys(filers).length == 0)
+            cond += " WHERE "+column+" BETWEEN '"+date1+"' AND '"+date2+"'";
+        
+        if (query != '') {
+             [result, ignored] = await sql.query("SELECT * FROM " + table + query + cond , queryArguments);
+        }else{
+             [result, ignored] = await sql.query("SELECT * FROM " + table + cond);
+        }
+        return result;
+    },
     getRows: async function (tableName, filters) {
         let query = 'SELECT * FROM ' + tableName;
         if (Object.values(filters).length > 0)

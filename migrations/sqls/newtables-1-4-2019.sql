@@ -559,3 +559,6 @@ ALTER TABLE `Trip_Rider_Notifications` ADD `Trip_Rider_Notifications_RiderID` IN
 ALTER TABLE `Trip_Supplier_Notifications` ADD `Trip_Supplier_Notifications_Supplier_ID` INT NOT NULL AFTER `Trip_Supplier_Notifications_Type_ID`;
 
 ALTER TABLE `Trip_Supplier_Notifications` CHANGE `Trip_Supplier_Notifications_Date` `Trip_Supplier_Notifications_Date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE `Trip_Supplier_Notifications` CHANGE `Trip_Supplier_Notifications_Action ID` `Trip_Supplier_Notifications_ActionID` INT(11) NOT NULL;
+
+ALTER TABLE `Trips_Reservations` ADD `Trip_Reservation_Fact` FLOAT NULL AFTER `Reservation_Rider_ID`;
