@@ -28,7 +28,7 @@
     "request": "^2.87.0",
     "request-promise-any": "^1.0.5",
     "shortid": "^2.2.12",
-    "socket.io": "^2.1.1",
+    "socket.io": "^2.4.0",
     "socketio-jwt": "^4.5.0",
     "stripe": "^4.25.0"
   },
