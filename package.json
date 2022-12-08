@@ -13,7 +13,7 @@
     "db-migrate": "^0.11.1",
     "db-migrate-mysql": "^1.1.10",
     "dotenv": "^4.0.0",
-    "express": "^4.16.3",
+    "express": "^4.17.3",
     "fcm-node": "^1.5.1",
     "firebase-admin": "^8.3.0",
     "geolib": "^2.0.24",
