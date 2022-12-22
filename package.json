@@ -17,7 +17,7 @@
     "fcm-node": "^1.5.1",
     "firebase-admin": "^8.3.0",
     "geolib": "^2.0.24",
-    "jsonwebtoken": "^7.4.3",
+    "jsonwebtoken": "^9.0.0",
     "moment": "^2.22.2",
     "mysql": "^2.16.0",
     "mysql2": "^1.5.3",
